@@ -38,20 +38,20 @@
 			this.UngroupSelected = new System.Windows.Forms.Button();
 			this.LabelOfAlpha = new System.Windows.Forms.Label();
 			this.Alpha = new System.Windows.Forms.TrackBar();
-			this.trackBar2 = new System.Windows.Forms.TrackBar();
+			this.Radius = new System.Windows.Forms.TrackBar();
 			this.LabelOfRadius = new System.Windows.Forms.Label();
 			this.Tetta = new System.Windows.Forms.TrackBar();
 			this.LabelOfTetta = new System.Windows.Forms.Label();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-			this.Delta = new System.Windows.Forms.TrackBar();
+			this.PictureBox = new System.Windows.Forms.PictureBox();
+			this.StatusBar = new System.Windows.Forms.RichTextBox();
+			this.Zetta = new System.Windows.Forms.TrackBar();
 			this.LabelOfDelta = new System.Windows.Forms.Label();
-			this.EditSelectedCut = new System.Windows.Forms.Button();
+			this.EditSelected = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.Alpha)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.Radius)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.Delta)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.Zetta)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// AddRandomCut
@@ -165,17 +165,17 @@
 			this.Alpha.TabIndex = 10;
 			this.Alpha.TickStyle = System.Windows.Forms.TickStyle.Both;
 			// 
-			// trackBar2
+			// Radius
 			// 
-			this.trackBar2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.trackBar2.Location = new System.Drawing.Point(632, 450);
-			this.trackBar2.Maximum = 1000;
-			this.trackBar2.Minimum = 1;
-			this.trackBar2.Name = "trackBar2";
-			this.trackBar2.Size = new System.Drawing.Size(140, 45);
-			this.trackBar2.TabIndex = 12;
-			this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.trackBar2.Value = 1;
+			this.Radius.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Radius.Location = new System.Drawing.Point(632, 450);
+			this.Radius.Maximum = 1000;
+			this.Radius.Minimum = 1;
+			this.Radius.Name = "Radius";
+			this.Radius.Size = new System.Drawing.Size(140, 45);
+			this.Radius.TabIndex = 12;
+			this.Radius.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.Radius.Value = 1;
 			// 
 			// LabelOfRadius
 			// 
@@ -208,39 +208,39 @@
 			this.LabelOfTetta.TabIndex = 13;
 			this.LabelOfTetta.Text = "Rotate on Y-axis:";
 			// 
-			// pictureBox1
+			// PictureBox
 			// 
-			this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.PictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.pictureBox1.BackColor = System.Drawing.Color.White;
-			this.pictureBox1.Location = new System.Drawing.Point(12, 12);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(614, 511);
-			this.pictureBox1.TabIndex = 15;
-			this.pictureBox1.TabStop = false;
+			this.PictureBox.BackColor = System.Drawing.Color.White;
+			this.PictureBox.Location = new System.Drawing.Point(12, 12);
+			this.PictureBox.Name = "PictureBox";
+			this.PictureBox.Size = new System.Drawing.Size(614, 511);
+			this.PictureBox.TabIndex = 15;
+			this.PictureBox.TabStop = false;
 			// 
-			// richTextBox1
+			// StatusBar
 			// 
-			this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			this.StatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.richTextBox1.Location = new System.Drawing.Point(12, 529);
-			this.richTextBox1.Name = "richTextBox1";
-			this.richTextBox1.ReadOnly = true;
-			this.richTextBox1.Size = new System.Drawing.Size(614, 20);
-			this.richTextBox1.TabIndex = 16;
-			this.richTextBox1.Text = "";
+			this.StatusBar.Location = new System.Drawing.Point(12, 529);
+			this.StatusBar.Name = "StatusBar";
+			this.StatusBar.ReadOnly = true;
+			this.StatusBar.Size = new System.Drawing.Size(614, 20);
+			this.StatusBar.TabIndex = 16;
+			this.StatusBar.Text = "";
 			// 
-			// Delta
+			// Zetta
 			// 
-			this.Delta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Delta.Location = new System.Drawing.Point(632, 386);
-			this.Delta.Maximum = 360;
-			this.Delta.Minimum = -360;
-			this.Delta.Name = "Delta";
-			this.Delta.Size = new System.Drawing.Size(140, 45);
-			this.Delta.TabIndex = 18;
-			this.Delta.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.Zetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Zetta.Location = new System.Drawing.Point(632, 386);
+			this.Zetta.Maximum = 360;
+			this.Zetta.Minimum = -360;
+			this.Zetta.Name = "Zetta";
+			this.Zetta.Size = new System.Drawing.Size(140, 45);
+			this.Zetta.TabIndex = 18;
+			this.Zetta.TickStyle = System.Windows.Forms.TickStyle.Both;
 			// 
 			// LabelOfDelta
 			// 
@@ -252,28 +252,28 @@
 			this.LabelOfDelta.TabIndex = 17;
 			this.LabelOfDelta.Text = "Rotate on Z-axis:";
 			// 
-			// EditSelectedCut
+			// EditSelected
 			// 
-			this.EditSelectedCut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.EditSelectedCut.Location = new System.Drawing.Point(746, 12);
-			this.EditSelectedCut.Name = "EditSelectedCut";
-			this.EditSelectedCut.Size = new System.Drawing.Size(26, 26);
-			this.EditSelectedCut.TabIndex = 19;
-			this.EditSelectedCut.Text = "⋯";
-			this.EditSelectedCut.UseVisualStyleBackColor = true;
+			this.EditSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.EditSelected.Location = new System.Drawing.Point(746, 12);
+			this.EditSelected.Name = "EditSelected";
+			this.EditSelected.Size = new System.Drawing.Size(26, 26);
+			this.EditSelected.TabIndex = 19;
+			this.EditSelected.Text = "⋯";
+			this.EditSelected.UseVisualStyleBackColor = true;
 			// 
 			// Workbench
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 561);
-			this.Controls.Add(this.EditSelectedCut);
-			this.Controls.Add(this.Delta);
+			this.Controls.Add(this.EditSelected);
+			this.Controls.Add(this.Zetta);
 			this.Controls.Add(this.LabelOfDelta);
-			this.Controls.Add(this.richTextBox1);
+			this.Controls.Add(this.StatusBar);
 			this.Controls.Add(this.Tetta);
 			this.Controls.Add(this.LabelOfTetta);
-			this.Controls.Add(this.trackBar2);
+			this.Controls.Add(this.Radius);
 			this.Controls.Add(this.LabelOfRadius);
 			this.Controls.Add(this.Alpha);
 			this.Controls.Add(this.LabelOfAlpha);
@@ -286,16 +286,16 @@
 			this.Controls.Add(this.ToggleGlobalPlane);
 			this.Controls.Add(this.RemoveSelected);
 			this.Controls.Add(this.AddRandomCut);
-			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.PictureBox);
 			this.KeyPreview = true;
 			this.MinimumSize = new System.Drawing.Size(600, 600);
 			this.Name = "Workbench";
 			this.Text = "Workbench";
 			((System.ComponentModel.ISupportInitialize)(this.Alpha)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.Radius)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.Delta)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.PictureBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.Zetta)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -314,14 +314,14 @@
 		private System.Windows.Forms.Button UngroupSelected;
 		private System.Windows.Forms.Label LabelOfAlpha;
 		private System.Windows.Forms.TrackBar Alpha;
-		private System.Windows.Forms.TrackBar trackBar2;
+		private System.Windows.Forms.TrackBar Radius;
 		private System.Windows.Forms.Label LabelOfRadius;
 		private System.Windows.Forms.TrackBar Tetta;
 		private System.Windows.Forms.Label LabelOfTetta;
-		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.RichTextBox richTextBox1;
-		private System.Windows.Forms.TrackBar Delta;
+		private System.Windows.Forms.PictureBox PictureBox;
+		private System.Windows.Forms.RichTextBox StatusBar;
+		private System.Windows.Forms.TrackBar Zetta;
 		private System.Windows.Forms.Label LabelOfDelta;
-		private System.Windows.Forms.Button EditSelectedCut;
+		private System.Windows.Forms.Button EditSelected;
 	}
 }
