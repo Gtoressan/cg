@@ -1,0 +1,50 @@
+# User-specific files.
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results.
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Cache/options directoris.
+.vs/
+.vscode/
+
+# Additional modules, libs abd others
+node_modules/
+
+# Any extra files.
+*_i.c
+*_p.c
+*_i.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+*.pidb
+*.svclog
