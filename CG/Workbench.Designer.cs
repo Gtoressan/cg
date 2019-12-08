@@ -63,6 +63,7 @@
 			this.AddRandomCut.TabIndex = 0;
 			this.AddRandomCut.Text = "Add random cut";
 			this.AddRandomCut.UseVisualStyleBackColor = true;
+			this.AddRandomCut.Click += new System.EventHandler(this.AddRandomCut_Click);
 			// 
 			// RemoveSelected
 			// 
@@ -73,6 +74,7 @@
 			this.RemoveSelected.TabIndex = 1;
 			this.RemoveSelected.Text = "Remove selected";
 			this.RemoveSelected.UseVisualStyleBackColor = true;
+			this.RemoveSelected.Click += new System.EventHandler(this.RemoveSelected_Click);
 			// 
 			// ToggleGlobalPlane
 			// 
@@ -83,6 +85,8 @@
 			this.ToggleGlobalPlane.TabIndex = 2;
 			this.ToggleGlobalPlane.Text = "Toggle global plane";
 			this.ToggleGlobalPlane.UseVisualStyleBackColor = true;
+			this.ToggleGlobalPlane.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ToggleGlobalPlane_MouseDown);
+			this.ToggleGlobalPlane.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ToggleGlobalPlane_MouseUp);
 			// 
 			// ClearScene
 			// 
@@ -93,6 +97,7 @@
 			this.ClearScene.TabIndex = 3;
 			this.ClearScene.Text = "Clear scene";
 			this.ClearScene.UseVisualStyleBackColor = true;
+			this.ClearScene.Click += new System.EventHandler(this.ClearScene_Click);
 			// 
 			// ExportScene
 			// 
@@ -103,6 +108,7 @@
 			this.ExportScene.TabIndex = 4;
 			this.ExportScene.Text = "Export";
 			this.ExportScene.UseVisualStyleBackColor = true;
+			this.ExportScene.Click += new System.EventHandler(this.ExportScene_Click);
 			// 
 			// ImportScene
 			// 
@@ -113,6 +119,7 @@
 			this.ImportScene.TabIndex = 5;
 			this.ImportScene.Text = "Import";
 			this.ImportScene.UseVisualStyleBackColor = true;
+			this.ImportScene.Click += new System.EventHandler(this.ImportScene_Click);
 			// 
 			// ToggleLocalPlane
 			// 
@@ -123,6 +130,8 @@
 			this.ToggleLocalPlane.TabIndex = 6;
 			this.ToggleLocalPlane.Text = "Toggle local plane";
 			this.ToggleLocalPlane.UseVisualStyleBackColor = true;
+			this.ToggleLocalPlane.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ToggleLocalPlane_MouseDown);
+			this.ToggleLocalPlane.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ToggleLocalPlane_MouseUp);
 			// 
 			// GroupSelected
 			// 
@@ -133,6 +142,7 @@
 			this.GroupSelected.TabIndex = 7;
 			this.GroupSelected.Text = "Group";
 			this.GroupSelected.UseVisualStyleBackColor = true;
+			this.GroupSelected.Click += new System.EventHandler(this.GroupSelected_Click);
 			// 
 			// UngroupSelected
 			// 
@@ -143,6 +153,7 @@
 			this.UngroupSelected.TabIndex = 8;
 			this.UngroupSelected.Text = "Ungroup";
 			this.UngroupSelected.UseVisualStyleBackColor = true;
+			this.UngroupSelected.Click += new System.EventHandler(this.UngroupSelected_Click);
 			// 
 			// LabelOfAlpha
 			// 
@@ -158,24 +169,25 @@
 			// 
 			this.Alpha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Alpha.Location = new System.Drawing.Point(632, 258);
-			this.Alpha.Maximum = 360;
-			this.Alpha.Minimum = -360;
+			this.Alpha.Maximum = 179;
 			this.Alpha.Name = "Alpha";
 			this.Alpha.Size = new System.Drawing.Size(140, 45);
 			this.Alpha.TabIndex = 10;
 			this.Alpha.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.Alpha.Scroll += new System.EventHandler(this.Alpha_Scroll);
 			// 
 			// Radius
 			// 
 			this.Radius.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Radius.Location = new System.Drawing.Point(632, 450);
-			this.Radius.Maximum = 1000;
-			this.Radius.Minimum = 1;
+			this.Radius.Maximum = 1025;
+			this.Radius.Minimum = 1000;
 			this.Radius.Name = "Radius";
 			this.Radius.Size = new System.Drawing.Size(140, 45);
 			this.Radius.TabIndex = 12;
 			this.Radius.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.Radius.Value = 1;
+			this.Radius.Value = 1000;
+			this.Radius.Scroll += new System.EventHandler(this.Radius_Scroll);
 			// 
 			// LabelOfRadius
 			// 
@@ -191,12 +203,12 @@
 			// 
 			this.Tetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Tetta.Location = new System.Drawing.Point(632, 322);
-			this.Tetta.Maximum = 360;
-			this.Tetta.Minimum = -360;
+			this.Tetta.Maximum = 179;
 			this.Tetta.Name = "Tetta";
 			this.Tetta.Size = new System.Drawing.Size(140, 45);
 			this.Tetta.TabIndex = 14;
 			this.Tetta.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.Tetta.Scroll += new System.EventHandler(this.Tetta_Scroll);
 			// 
 			// LabelOfTetta
 			// 
@@ -219,6 +231,10 @@
 			this.PictureBox.Size = new System.Drawing.Size(614, 511);
 			this.PictureBox.TabIndex = 15;
 			this.PictureBox.TabStop = false;
+			this.PictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBox_MouseDown);
+			this.PictureBox.MouseLeave += new System.EventHandler(this.PictureBox_MouseLeave);
+			this.PictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PictureBox_MouseMove);
+			this.PictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PictureBox_MouseUp);
 			// 
 			// StatusBar
 			// 
@@ -235,12 +251,12 @@
 			// 
 			this.Zetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Zetta.Location = new System.Drawing.Point(632, 386);
-			this.Zetta.Maximum = 360;
-			this.Zetta.Minimum = -360;
+			this.Zetta.Maximum = 179;
 			this.Zetta.Name = "Zetta";
 			this.Zetta.Size = new System.Drawing.Size(140, 45);
 			this.Zetta.TabIndex = 18;
 			this.Zetta.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.Zetta.Scroll += new System.EventHandler(this.Zetta_Scroll);
 			// 
 			// LabelOfDelta
 			// 
@@ -261,6 +277,7 @@
 			this.EditSelected.TabIndex = 19;
 			this.EditSelected.Text = "⋯";
 			this.EditSelected.UseVisualStyleBackColor = true;
+			this.EditSelected.Click += new System.EventHandler(this.EditSelected_Click);
 			// 
 			// Workbench
 			// 
