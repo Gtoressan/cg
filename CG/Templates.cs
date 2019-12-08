@@ -155,7 +155,7 @@ namespace CG
 			return Vertex.GetIntersection(vertex, epsilon);
 		}
 
-		public override string ToString() => $"{Origin} - {Vertex}";
+		public override string ToString() => $"{Origin}, {Vertex}";
 
 		public override void Transform(double[] matrix)
 		{
@@ -225,6 +225,11 @@ namespace CG
 		public override void Transform(double[] matrix)
 		{
 			Transform(new Vertex[] { A, B }, matrix);
+		}
+
+		public override string ToString()
+		{
+			return $"x - {A.X} / {(B.X - A.X)} = y - {A.Y} / {(B.Y - A.Y)} = z - {A.Z} / {(B.Z - A.Z)}";
 		}
 	}
 
@@ -330,6 +335,11 @@ namespace CG
 			foreach (var i in Shapes) {
 				i.Transform(matrix);
 			}
+		}
+
+		public override string ToString()
+		{
+			return Shapes.FirstOrDefault()?.ToString() ?? "Empty group";
 		}
 	}
 }

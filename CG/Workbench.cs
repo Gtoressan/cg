@@ -27,6 +27,7 @@ namespace CG
 				PictureBox.Height);
 			Graphics = Graphics.FromImage(
 				PictureBox.Image);
+			FillStatusBar();
 		}
 
 		#region Menu event handlers.
@@ -36,13 +37,14 @@ namespace CG
 			var cut = new Cut(
 				a: GetRandomVertex(),
 				b: GetRandomVertex());
-			TogglePlane(
+			ToPoint(
 				shape: cut,
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
 			cut.Draw(Graphics, Pens.Black);
 			Shapes.Add(cut);
 			PictureBox.Refresh();
+			FillStatusBar();
 		}
 
 		private void EditSelected_Click(object sender, EventArgs e)
@@ -60,6 +62,7 @@ namespace CG
 			Selected.Clear();
 			RedrawAllShapes();
 			PictureBox.Refresh();
+			FillStatusBar();
 		}
 
 		private void ClearScene_Click(object sender, EventArgs e)
@@ -72,6 +75,7 @@ namespace CG
 			Graphics = Graphics.FromImage(PictureBox.Image);
 			Shapes.Clear();
 			Selected.Clear();
+			FillStatusBar();
 		}
 
 		private void ExportScene_Click(object sender, EventArgs e)
@@ -90,7 +94,7 @@ namespace CG
 				x: PictureBox.Image.Width / 2,
 				y: PictureBox.Image.Height / 2,
 				z: PictureBox.Image.Height / 2);
-			TogglePlane(
+			ToPoint(
 				shape: plane,
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
@@ -105,7 +109,7 @@ namespace CG
 				x: PictureBox.Image.Width / 2,
 				y: PictureBox.Image.Height / 2,
 				z: PictureBox.Image.Height / 2);
-			TogglePlane(
+			ToPoint(
 				shape: plane,
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
@@ -140,6 +144,7 @@ namespace CG
 			Shapes.Add(group);
 			Selected.Clear();
 			Selected.Add(group);
+			FillStatusBar();
 		}
 
 		private void UngroupSelected_Click(object sender, EventArgs e)
@@ -157,6 +162,7 @@ namespace CG
 			Selected.Clear();
 			RedrawAllShapes();
 			PictureBox.Refresh();
+			FillStatusBar();
 		}
 
 		private void Alpha_Scroll(object sender, EventArgs e)
@@ -199,11 +205,13 @@ namespace CG
 					break;
 				}
 			}
+
+			FillStatusBar();
 		}
 
 		private void PictureBox_MouseLeave(object sender, EventArgs e)
 		{
-			
+			FillStatusBar();
 		}
 
 		private void PictureBox_MouseMove(object sender, MouseEventArgs e)
@@ -214,21 +222,24 @@ namespace CG
 				var offsetZ = 0;
 
 				MoveSelected(offsetX, offsetY, offsetZ);
-				OldVertex = new Vertex(e.X, e.Y, 0, 1);
 			}
+
+			OldVertex = new Vertex(e.X, e.Y, 0, 1);
+			FillStatusBar();
 		}
 
 		private void PictureBox_MouseUp(object sender, MouseEventArgs e)
 		{
 			IsMousePressed = false;
 			OldVertex = new Vertex(0, 0, 0, 1);
+			FillStatusBar();
 		}
 
 		#endregion
 
 		#region Matrix transformations.
 
-		void TogglePlane(Shape shape, double xFactor, double yFactor)
+		void ToPoint(Shape shape, double xFactor, double yFactor)
 		{
 			var matrix = new double[] {
 				1,          0,          0,  0,
@@ -237,7 +248,19 @@ namespace CG
 				xFactor,    yFactor,    0,  1
 			};
 
-			shape.Transform(matrix);
+			shape?.Transform(matrix);
+		}
+
+		void ToVertex(Shape shape, double xFactor, double yFactor)
+		{
+			var matrix = new double[] {
+				1,          0,          0,  0,
+				0,          -1,         0,  0,
+				0,          0,          1,  0,
+				-xFactor,    yFactor,    0,  1
+			};
+
+			shape?.Transform(matrix);
 		}
 
 		void Transport(Shape shape, double offsetX, double offsetY, double offsetZ)
@@ -249,7 +272,7 @@ namespace CG
 				offsetX,    offsetY,    offsetZ,    1
 			};
 
-			shape.Transform(matrix);
+			shape?.Transform(matrix);
 		}
 
 		#endregion
@@ -331,6 +354,20 @@ namespace CG
 
 			RedrawAllShapes();
 			PictureBox.Refresh();
+		}
+
+		void FillStatusBar()
+		{
+			ToVertex(OldVertex, PictureBox.Image.Width / 2, PictureBox.Image.Height / 2);
+			ToVertex(Selected.FirstOrDefault(), PictureBox.Image.Width / 2, PictureBox.Image.Height / 2);
+
+			StatusBar.Text =
+				$"Shapes: {Shapes.Count}, " +
+				$"Cursor: {OldVertex}, " +
+				$"Equation: {Selected.FirstOrDefault()}";
+
+			ToPoint(OldVertex, PictureBox.Image.Width / 2, PictureBox.Image.Height / 2);
+			ToPoint(Selected.FirstOrDefault(), PictureBox.Image.Width / 2, PictureBox.Image.Height / 2);
 		}
 	}
 }
