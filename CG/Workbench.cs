@@ -52,12 +52,26 @@ namespace CG
 
 		private void RemoveSelected_Click(object sender, EventArgs e)
 		{
+			foreach (var i in Selected) {
+				i.Draw(Graphics, new Pen(PictureBox.BackColor));
+				Shapes.Remove(i);
+			}
 
+			Selected.Clear();
+			RedrawAllShapes();
+			PictureBox.Refresh();
 		}
 
 		private void ClearScene_Click(object sender, EventArgs e)
 		{
-
+			PictureBox.Image.Dispose();
+			Graphics.Dispose();
+			PictureBox.Image = new Bitmap(
+				PictureBox.Width,
+				PictureBox.Height);
+			Graphics = Graphics.FromImage(PictureBox.Image);
+			Shapes.Clear();
+			Selected.Clear();
 		}
 
 		private void ExportScene_Click(object sender, EventArgs e)
@@ -112,12 +126,37 @@ namespace CG
 
 		private void GroupSelected_Click(object sender, EventArgs e)
 		{
+			if (Selected.Count < 2) {
+				return;
+			}
 
+			var group = new Group();
+
+			foreach (var i in Selected) {
+				group.Shapes.Add(i);
+				Shapes.Remove(i);
+			}
+
+			Shapes.Add(group);
+			Selected.Clear();
+			Selected.Add(group);
 		}
 
 		private void UngroupSelected_Click(object sender, EventArgs e)
 		{
+			foreach (var i in Selected) {
+				if (i is Group group) {
+					foreach (var j in group.Shapes) {
+						Shapes.Add(j);
+					}
 
+					Shapes.Remove(group);
+				}
+			}
+
+			Selected.Clear();
+			RedrawAllShapes();
+			PictureBox.Refresh();
 		}
 
 		private void Alpha_Scroll(object sender, EventArgs e)
