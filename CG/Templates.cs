@@ -92,6 +92,8 @@ namespace CG
 			return null;
 		}
 
+		public override string ToString() => $"{X}, {Y}, {Z}";
+
 		public override void Transform(double[] matrix)
 		{
 			Transform(new Vertex[] { this }, matrix);
@@ -128,6 +130,8 @@ namespace CG
 		{
 			return Vertex.GetIntersection(vertex, epsilon);
 		}
+
+		public override string ToString() => $"{Origin} - {Vertex}";
 
 		public override void Transform(double[] matrix)
 		{

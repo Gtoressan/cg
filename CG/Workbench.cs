@@ -13,6 +13,8 @@ namespace CG
 	public partial class Workbench : Form
 	{
 		Graphics Graphics;
+		Random Random = new Random();
+		List<Shape> Shapes = new List<Shape>();
 
 		public Workbench()
 		{
@@ -28,7 +30,16 @@ namespace CG
 
 		private void AddRandomCut_Click(object sender, EventArgs e)
 		{
-
+			var cut = new Cut(
+				a: GetRandomVertex(),
+				b: GetRandomVertex());
+			TogglePlane(
+				shape: cut,
+				xFactor: PictureBox.Image.Width / 2,
+				yFactor: PictureBox.Image.Height / 2);
+			cut.Draw(Graphics, Pens.Black);
+			Shapes.Add(cut);
+			PictureBox.Refresh();
 		}
 
 		private void EditSelected_Click(object sender, EventArgs e)
@@ -58,17 +69,31 @@ namespace CG
 
 		private void ToggleGlobalPlane_MouseDown(object sender, MouseEventArgs e)
 		{
-			var plane = new Plane(PictureBox.Width / 2, PictureBox.Height / 2, PictureBox.Height / 2);
-			TogglePlane(plane, PictureBox.Width / 2, PictureBox.Height / 2);
+			var plane = new Plane(
+				x: PictureBox.Image.Width / 2,
+				y: PictureBox.Image.Height / 2,
+				z: PictureBox.Image.Height / 2);
+			TogglePlane(
+				shape: plane,
+				xFactor: PictureBox.Image.Width / 2,
+				yFactor: PictureBox.Image.Height / 2);
 			plane.Draw(Graphics, Pens.LightGray);
+			RedrawAllShapes();
 			PictureBox.Refresh();
 		}
 
 		private void ToggleGlobalPlane_MouseUp(object sender, MouseEventArgs e)
 		{
-			var plane = new Plane(PictureBox.Width / 2, PictureBox.Height / 2, PictureBox.Height / 2);
-			TogglePlane(plane, PictureBox.Width / 2, PictureBox.Height / 2);
+			var plane = new Plane(
+				x: PictureBox.Image.Width / 2,
+				y: PictureBox.Image.Height / 2,
+				z: PictureBox.Image.Height / 2);
+			TogglePlane(
+				shape: plane,
+				xFactor: PictureBox.Image.Width / 2,
+				yFactor: PictureBox.Image.Height / 2);
 			plane.Draw(Graphics, new Pen(PictureBox.BackColor));
+			RedrawAllShapes();
 			PictureBox.Refresh();
 		}
 
@@ -156,15 +181,18 @@ namespace CG
 
 		Vertex GetRandomVertex()
 		{
-			var random = new Random();
-
 			return new Vertex(
-				x: random.Next(-PictureBox.Width / 2 + 10, PictureBox.Width / 2 - 10),
-				y: random.Next(-PictureBox.Height / 2 + 10, PictureBox.Height / 2 - 10),
+				x: Random.Next(-PictureBox.Width / 2 + 10, PictureBox.Width / 2 - 10),
+				y: Random.Next(-PictureBox.Height / 2 + 10, PictureBox.Height / 2 - 10),
 				z: 0,
 				uniformCoordinate: 1);
 		}
 
-		
+		void RedrawAllShapes()
+		{
+			foreach (var i in Shapes) {
+				i.Draw(Graphics, Pens.Black);
+			}
+		}
 	}
 }
