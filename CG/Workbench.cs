@@ -12,9 +12,16 @@ namespace CG
 {
 	public partial class Workbench : Form
 	{
+		Graphics Graphics;
+
 		public Workbench()
 		{
 			InitializeComponent();
+			PictureBox.Image = new Bitmap(
+				PictureBox.Width,
+				PictureBox.Height);
+			Graphics = Graphics.FromImage(
+				PictureBox.Image);
 		}
 
 		#region Menu event handlers.
@@ -51,12 +58,18 @@ namespace CG
 
 		private void ToggleGlobalPlane_MouseDown(object sender, MouseEventArgs e)
 		{
-
+			var plane = new Plane(PictureBox.Width / 2, PictureBox.Height / 2, PictureBox.Height / 2);
+			TogglePlane(plane, PictureBox.Width / 2, PictureBox.Height / 2);
+			plane.Draw(Graphics, Pens.LightGray);
+			PictureBox.Refresh();
 		}
 
 		private void ToggleGlobalPlane_MouseUp(object sender, MouseEventArgs e)
 		{
-
+			var plane = new Plane(PictureBox.Width / 2, PictureBox.Height / 2, PictureBox.Height / 2);
+			TogglePlane(plane, PictureBox.Width / 2, PictureBox.Height / 2);
+			plane.Draw(Graphics, new Pen(PictureBox.BackColor));
+			PictureBox.Refresh();
 		}
 
 		private void ToggleLocalPlane_MouseDown(object sender, MouseEventArgs e)
@@ -124,5 +137,34 @@ namespace CG
 		}
 
 		#endregion
+
+		#region Matrix transformations.
+
+		void TogglePlane(Shape shape, double xFactor, double yFactor)
+		{
+			var matrix = new double[] {
+				1,			0,			0,	0,
+				0,			-1,			0,	0,
+				0,			0,			1,	0,
+				xFactor,	yFactor,	0,	1
+			};
+			
+			shape.Transform(matrix);
+		}
+
+		#endregion
+
+		Vertex GetRandomVertex()
+		{
+			var random = new Random();
+
+			return new Vertex(
+				x: random.Next(-PictureBox.Width / 2 + 10, PictureBox.Width / 2 - 10),
+				y: random.Next(-PictureBox.Height / 2 + 10, PictureBox.Height / 2 - 10),
+				z: 0,
+				uniformCoordinate: 1);
+		}
+
+		
 	}
 }

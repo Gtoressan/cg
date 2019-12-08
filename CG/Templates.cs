@@ -196,8 +196,8 @@ namespace CG
 		public Plane(double x, double y, double z)
 		{
 			OX = new Cut(new Vertex(-x, 0, 0, 1), new Vertex(x, 0, 0, 1));
-			OX = new Cut(new Vertex(0, -y, 0, 1), new Vertex(0, y, 0, 1));
-			OX = new Cut(new Vertex(0, 0, -z, 1), new Vertex(0, 0, z, 1));
+			OY = new Cut(new Vertex(0, -y, 0, 1), new Vertex(0, y, 0, 1));
+			OZ = new Cut(new Vertex(0, 0, -z, 1), new Vertex(0, 0, z, 1));
 		}
 
 		public override object Clone()
