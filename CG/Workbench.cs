@@ -15,6 +15,9 @@ namespace CG
 		Graphics Graphics;
 		Random Random = new Random();
 		List<Shape> Shapes = new List<Shape>();
+		List<Shape> Selected = new List<Shape>();
+		Vertex OldVertex = new Vertex(0, 0, 0, 1);
+		Boolean IsMousePressed = false;
 
 		public Workbench()
 		{
@@ -143,22 +146,43 @@ namespace CG
 
 		private void PictureBox_MouseDown(object sender, MouseEventArgs e)
 		{
+			IsMousePressed = true;
+			OldVertex = new Vertex(e.X, e.Y, 0, 1);
 
+			switch (ModifierKeys) {
+				default: {
+					SelectShape(OldVertex);
+					break;
+				}
+
+				case Keys.Control: {
+					SelectManyShapes(OldVertex);
+					break;
+				}
+			}
 		}
 
 		private void PictureBox_MouseLeave(object sender, EventArgs e)
 		{
-
+			
 		}
 
 		private void PictureBox_MouseMove(object sender, MouseEventArgs e)
 		{
+			if (IsMousePressed) {
+				var offsetX = e.X - OldVertex.X;
+				var offsetY = e.Y - OldVertex.Y;
+				var offsetZ = 0;
 
+				MoveSelected(offsetX, offsetY, offsetZ);
+				OldVertex = new Vertex(e.X, e.Y, 0, 1);
+			}
 		}
 
 		private void PictureBox_MouseUp(object sender, MouseEventArgs e)
 		{
-
+			IsMousePressed = false;
+			OldVertex = new Vertex(0, 0, 0, 1);
 		}
 
 		#endregion
@@ -168,12 +192,24 @@ namespace CG
 		void TogglePlane(Shape shape, double xFactor, double yFactor)
 		{
 			var matrix = new double[] {
-				1,			0,			0,	0,
-				0,			-1,			0,	0,
-				0,			0,			1,	0,
-				xFactor,	yFactor,	0,	1
+				1,          0,          0,  0,
+				0,          -1,         0,  0,
+				0,          0,          1,  0,
+				xFactor,    yFactor,    0,  1
 			};
-			
+
+			shape.Transform(matrix);
+		}
+
+		void Transport(Shape shape, double offsetX, double offsetY, double offsetZ)
+		{
+			var matrix = new double[] {
+				1,          0,          0,          0,
+				0,          1,          0,          0,
+				0,          0,          1,          0,
+				offsetX,    offsetY,    offsetZ,    1
+			};
+
 			shape.Transform(matrix);
 		}
 
@@ -190,9 +226,72 @@ namespace CG
 
 		void RedrawAllShapes()
 		{
-			foreach (var i in Shapes) {
+			foreach (var i in Shapes.Except(Selected)) {
 				i.Draw(Graphics, Pens.Black);
 			}
+
+			foreach (var i in Selected) {
+				i.Draw(Graphics, Pens.Blue);
+			}
+		}
+
+		Shape GetNearestShape(Vertex vertex)
+		{
+			var minDistance = double.PositiveInfinity;
+			Shape nearest = null;
+
+			foreach (var i in Shapes) {
+				var distance = i.GetDistance(vertex);
+
+				if (minDistance > distance) {
+					minDistance = distance;
+					nearest = i.GetIntersection(vertex, 5);
+				}
+			}
+
+			return nearest;
+		}
+
+		void SelectShape(Vertex vertex)
+		{
+			foreach (var i in Selected) {
+				i.Draw(Graphics, Pens.Black);
+			}
+
+			Selected.Clear();
+
+			if (GetNearestShape(vertex) is Shape nearest) {
+				nearest.Draw(Graphics, Pens.Blue);
+				Selected.Add(nearest);
+			}
+
+			PictureBox.Refresh();
+		}
+
+		void SelectManyShapes(Vertex vertex)
+		{
+			if (GetNearestShape(vertex) is Shape nearest) {
+				if (Selected.Contains(nearest)) {
+					nearest.Draw(Graphics, Pens.Black);
+					Selected.Remove(nearest);
+				} else {
+					nearest.Draw(Graphics, Pens.Blue);
+					Selected.Add(nearest);
+				}
+
+				PictureBox.Refresh();
+			}
+		}
+
+		void MoveSelected(double offsetX, double offsetY, double offsetZ)
+		{
+			foreach (var i in Selected) {
+				i.Draw(Graphics, new Pen(PictureBox.BackColor));
+				Transport(i, offsetX, offsetY, offsetZ);
+			}
+
+			RedrawAllShapes();
+			PictureBox.Refresh();
 		}
 	}
 }

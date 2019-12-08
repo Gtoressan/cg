@@ -75,7 +75,20 @@ namespace CG
 
 		public override void Draw(Graphics graphics, Pen pen)
 		{
-			graphics.DrawEllipse(pen, (int)X, (int)Y, 2, 2);
+			graphics.DrawEllipse(pen, (int)X - 1, (int)Y - 1, 2, 2);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Vertex vertex &&
+				X == vertex.X &&
+				Y == vertex.Y &&
+				Z == vertex.Z &&
+				UC == vertex.UC) {
+				return true;
+			}
+
+			return false;
 		}
 
 		public override double GetDistance(Vertex vertex)
@@ -121,6 +134,17 @@ namespace CG
 			Origin.Draw(graphics, pen);
 		}
 
+		public override bool Equals(object obj)
+		{
+			if (obj is SubVertex subvertex &&
+				Origin == subvertex.Origin &&
+				Vertex == subvertex.Vertex) {
+				return true;
+			}
+
+			return false;
+		}
+
 		public override double GetDistance(Vertex vertex)
 		{
 			return Vertex.GetDistance(vertex);
@@ -158,6 +182,19 @@ namespace CG
 		public override void Draw(Graphics graphics, Pen pen)
 		{
 			graphics.DrawLine(pen, (int)A.X, (int)A.Y, (int)B.X, (int)B.Y);
+			A.Draw(graphics, pen);
+			B.Draw(graphics, pen);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is Cut cut &&
+				A == cut.A &&
+				B == cut.B) {
+				return true;
+			}
+
+			return false;
 		}
 
 		public override double GetDistance(Vertex vertex)
@@ -168,9 +205,9 @@ namespace CG
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
 			if (A.GetIntersection(vertex, epsilon) is Vertex a) {
-				return a;
+				return new SubVertex(a, this);
 			} else if (B.GetIntersection(vertex, epsilon) is Vertex b) {
-				return b;
+				return new SubVertex(b, this);
 			} else if (
 				GetDistance(vertex) <= epsilon &&
 				A.GetDistance(vertex) + B.GetDistance(vertex) <= A.GetDistance(B) + epsilon) {
