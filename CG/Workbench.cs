@@ -22,11 +22,7 @@ namespace CG
 		public Workbench()
 		{
 			InitializeComponent();
-			PictureBox.Image = new Bitmap(
-				PictureBox.Width,
-				PictureBox.Height);
-			Graphics = Graphics.FromImage(
-				PictureBox.Image);
+			ReloadScene();
 			FillStatusBar();
 		}
 
@@ -55,11 +51,11 @@ namespace CG
 		private void RemoveSelected_Click(object sender, EventArgs e)
 		{
 			foreach (var i in Selected) {
-				i.Draw(Graphics, new Pen(PictureBox.BackColor));
 				Shapes.Remove(i);
 			}
 
 			Selected.Clear();
+			ReloadScene();
 			RedrawAllShapes();
 			PictureBox.Refresh();
 			FillStatusBar();
@@ -67,14 +63,9 @@ namespace CG
 
 		private void ClearScene_Click(object sender, EventArgs e)
 		{
-			PictureBox.Image.Dispose();
-			Graphics.Dispose();
-			PictureBox.Image = new Bitmap(
-				PictureBox.Width,
-				PictureBox.Height);
-			Graphics = Graphics.FromImage(PictureBox.Image);
 			Shapes.Clear();
 			Selected.Clear();
+			ReloadScene();
 			FillStatusBar();
 		}
 
@@ -105,15 +96,7 @@ namespace CG
 
 		private void ToggleGlobalPlane_MouseUp(object sender, MouseEventArgs e)
 		{
-			var plane = new Plane(
-				x: PictureBox.Image.Width / 2,
-				y: PictureBox.Image.Height / 2,
-				z: PictureBox.Image.Height / 2);
-			ToPoint(
-				shape: plane,
-				xFactor: PictureBox.Image.Width / 2,
-				yFactor: PictureBox.Image.Height / 2);
-			plane.Draw(Graphics, new Pen(PictureBox.BackColor));
+			ReloadScene();
 			RedrawAllShapes();
 			PictureBox.Refresh();
 		}
@@ -277,6 +260,18 @@ namespace CG
 
 		#endregion
 
+		void ReloadScene()
+		{
+			PictureBox.Image?.Dispose();
+			Graphics?.Dispose();
+
+			PictureBox.Image = new Bitmap(
+				PictureBox.Width,
+				PictureBox.Height);
+			Graphics = Graphics.FromImage(
+				PictureBox.Image);
+		}
+
 		Vertex GetRandomVertex()
 		{
 			return new Vertex(
@@ -316,17 +311,14 @@ namespace CG
 
 		void SelectShape(Vertex vertex)
 		{
-			foreach (var i in Selected) {
-				i.Draw(Graphics, Pens.Black);
-			}
-
 			Selected.Clear();
 
 			if (GetNearestShape(vertex) is Shape nearest) {
-				nearest.Draw(Graphics, Pens.Blue);
 				Selected.Add(nearest);
 			}
 
+			ReloadScene();
+			RedrawAllShapes();
 			PictureBox.Refresh();
 		}
 
@@ -334,13 +326,13 @@ namespace CG
 		{
 			if (GetNearestShape(vertex) is Shape nearest) {
 				if (Selected.Contains(nearest)) {
-					nearest.Draw(Graphics, Pens.Black);
 					Selected.Remove(nearest);
 				} else {
-					nearest.Draw(Graphics, Pens.Blue);
 					Selected.Add(nearest);
 				}
 
+				ReloadScene();
+				RedrawAllShapes();
 				PictureBox.Refresh();
 			}
 		}
@@ -348,10 +340,10 @@ namespace CG
 		void MoveSelected(double offsetX, double offsetY, double offsetZ)
 		{
 			foreach (var i in Selected) {
-				i.Draw(Graphics, new Pen(PictureBox.BackColor));
 				Transport(i, offsetX, offsetY, offsetZ);
 			}
 
+			ReloadScene();
 			RedrawAllShapes();
 			PictureBox.Refresh();
 		}
