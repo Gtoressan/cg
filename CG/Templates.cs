@@ -229,7 +229,7 @@ namespace CG
 
 		public override string ToString()
 		{
-			return $"x - {A.X} / {(B.X - A.X)} = y - {A.Y} / {(B.Y - A.Y)} = z - {A.Z} / {(B.Z - A.Z)}";
+			return $"x - ({A.X}) / {(B.X - A.X)} = y - ({A.Y}) / {(B.Y - A.Y)} = z - ({A.Z}) / {(B.Z - A.Z)}";
 		}
 	}
 

@@ -44,14 +44,11 @@
 			this.LabelOfTetta = new System.Windows.Forms.Label();
 			this.PictureBox = new System.Windows.Forms.PictureBox();
 			this.StatusBar = new System.Windows.Forms.RichTextBox();
-			this.Zetta = new System.Windows.Forms.TrackBar();
-			this.LabelOfDelta = new System.Windows.Forms.Label();
 			this.EditSelected = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.Alpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Radius)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.Zetta)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// AddRandomCut
@@ -179,21 +176,21 @@
 			// Radius
 			// 
 			this.Radius.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Radius.Location = new System.Drawing.Point(632, 450);
-			this.Radius.Maximum = 1025;
-			this.Radius.Minimum = 1000;
+			this.Radius.Location = new System.Drawing.Point(632, 386);
+			this.Radius.Maximum = 725;
+			this.Radius.Minimum = 700;
 			this.Radius.Name = "Radius";
 			this.Radius.Size = new System.Drawing.Size(140, 45);
 			this.Radius.TabIndex = 12;
 			this.Radius.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.Radius.Value = 1000;
+			this.Radius.Value = 700;
 			this.Radius.Scroll += new System.EventHandler(this.Radius_Scroll);
 			// 
 			// LabelOfRadius
 			// 
 			this.LabelOfRadius.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.LabelOfRadius.AutoSize = true;
-			this.LabelOfRadius.Location = new System.Drawing.Point(629, 434);
+			this.LabelOfRadius.Location = new System.Drawing.Point(629, 370);
 			this.LabelOfRadius.Name = "LabelOfRadius";
 			this.LabelOfRadius.Size = new System.Drawing.Size(43, 13);
 			this.LabelOfRadius.TabIndex = 11;
@@ -247,27 +244,6 @@
 			this.StatusBar.TabIndex = 16;
 			this.StatusBar.Text = "";
 			// 
-			// Zetta
-			// 
-			this.Zetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Zetta.Location = new System.Drawing.Point(632, 386);
-			this.Zetta.Maximum = 179;
-			this.Zetta.Name = "Zetta";
-			this.Zetta.Size = new System.Drawing.Size(140, 45);
-			this.Zetta.TabIndex = 18;
-			this.Zetta.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.Zetta.Scroll += new System.EventHandler(this.Zetta_Scroll);
-			// 
-			// LabelOfDelta
-			// 
-			this.LabelOfDelta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.LabelOfDelta.AutoSize = true;
-			this.LabelOfDelta.Location = new System.Drawing.Point(629, 370);
-			this.LabelOfDelta.Name = "LabelOfDelta";
-			this.LabelOfDelta.Size = new System.Drawing.Size(88, 13);
-			this.LabelOfDelta.TabIndex = 17;
-			this.LabelOfDelta.Text = "Rotate on Z-axis:";
-			// 
 			// EditSelected
 			// 
 			this.EditSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -285,8 +261,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 561);
 			this.Controls.Add(this.EditSelected);
-			this.Controls.Add(this.Zetta);
-			this.Controls.Add(this.LabelOfDelta);
 			this.Controls.Add(this.StatusBar);
 			this.Controls.Add(this.Tetta);
 			this.Controls.Add(this.LabelOfTetta);
@@ -312,7 +286,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.Radius)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.PictureBox)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.Zetta)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -337,8 +310,6 @@
 		private System.Windows.Forms.Label LabelOfTetta;
 		private System.Windows.Forms.PictureBox PictureBox;
 		private System.Windows.Forms.RichTextBox StatusBar;
-		private System.Windows.Forms.TrackBar Zetta;
-		private System.Windows.Forms.Label LabelOfDelta;
 		private System.Windows.Forms.Button EditSelected;
 	}
 }

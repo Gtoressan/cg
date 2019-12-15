@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Math;
 
 namespace CG
 {
@@ -33,12 +34,8 @@ namespace CG
 			var cut = new Cut(
 				a: GetRandomVertex(),
 				b: GetRandomVertex());
-			ToPoint(
-				shape: cut,
-				xFactor: PictureBox.Image.Width / 2,
-				yFactor: PictureBox.Image.Height / 2);
-			cut.Draw(Graphics, Pens.Black);
 			Shapes.Add(cut);
+			DrawShape(cut, Pens.Black);
 			PictureBox.Refresh();
 			FillStatusBar();
 		}
@@ -56,7 +53,8 @@ namespace CG
 
 			Selected.Clear();
 			ReloadScene();
-			RedrawAllShapes();
+			RedrawSelected();
+			RedrawShapesExceptSelected();
 			PictureBox.Refresh();
 			FillStatusBar();
 		}
@@ -84,20 +82,18 @@ namespace CG
 			var plane = new Plane(
 				x: PictureBox.Image.Width / 2,
 				y: PictureBox.Image.Height / 2,
-				z: PictureBox.Image.Height / 2);
-			ToPoint(
-				shape: plane,
-				xFactor: PictureBox.Image.Width / 2,
-				yFactor: PictureBox.Image.Height / 2);
-			plane.Draw(Graphics, Pens.LightGray);
-			RedrawAllShapes();
+				z: 0);
+			DrawShape(plane, Pens.LightGray);
+			RedrawSelected();
+			RedrawShapesExceptSelected();
 			PictureBox.Refresh();
 		}
 
 		private void ToggleGlobalPlane_MouseUp(object sender, MouseEventArgs e)
 		{
 			ReloadScene();
-			RedrawAllShapes();
+			RedrawSelected();
+			RedrawShapesExceptSelected();
 			PictureBox.Refresh();
 		}
 
@@ -143,29 +139,52 @@ namespace CG
 			}
 
 			Selected.Clear();
-			RedrawAllShapes();
+			RedrawSelected();
+			RedrawShapesExceptSelected();
 			PictureBox.Refresh();
 			FillStatusBar();
 		}
 
 		private void Alpha_Scroll(object sender, EventArgs e)
 		{
+			ReloadScene();
+			RedrawShapesExceptSelected();
 
+			foreach (var i in Selected) {
+				var tempShape = (Shape)i.Clone();
+				Rotate(tempShape, Alpha.Value * PI / 180, Tetta.Value * PI / 180, Radius.Value);
+				DrawShape(tempShape, Pens.Blue);
+			}
+
+			PictureBox.Refresh();
 		}
 
 		private void Tetta_Scroll(object sender, EventArgs e)
 		{
+			ReloadScene();
+			RedrawShapesExceptSelected();
 
-		}
+			foreach (var i in Selected) {
+				var tempShape = (Shape)i.Clone();
+				Rotate(tempShape, Alpha.Value * PI / 180, Tetta.Value * PI / 180, Radius.Value);
+				DrawShape(tempShape, Pens.Blue);
+			}
 
-		private void Zetta_Scroll(object sender, EventArgs e)
-		{
-
+			PictureBox.Refresh();
 		}
 
 		private void Radius_Scroll(object sender, EventArgs e)
 		{
+			ReloadScene();
+			RedrawShapesExceptSelected();
 
+			foreach (var i in Selected) {
+				var tempShape = (Shape)i.Clone();
+				Rotate(tempShape, Alpha.Value * PI / 180, Tetta.Value * PI / 180, Radius.Value);
+				DrawShape(tempShape, Pens.Blue);
+			}
+
+			PictureBox.Refresh();
 		}
 
 		#endregion
@@ -176,6 +195,10 @@ namespace CG
 		{
 			IsMousePressed = true;
 			OldVertex = new Vertex(e.X, e.Y, 0, 1);
+			ToVertex(
+				shape: OldVertex,
+				xFactor: PictureBox.Image.Width / 2,
+				yFactor: PictureBox.Image.Height / 2);
 
 			switch (ModifierKeys) {
 				default: {
@@ -199,15 +222,22 @@ namespace CG
 
 		private void PictureBox_MouseMove(object sender, MouseEventArgs e)
 		{
+			var currentVertex = new Vertex(e.X, e.Y, 0, 1);
+			ToVertex(
+				shape: currentVertex,
+				xFactor: PictureBox.Image.Width / 2,
+				yFactor: PictureBox.Image.Height / 2);
+
 			if (IsMousePressed) {
-				var offsetX = e.X - OldVertex.X;
-				var offsetY = e.Y - OldVertex.Y;
+
+				var offsetX = currentVertex.X - OldVertex.X;
+				var offsetY = currentVertex.Y - OldVertex.Y;
 				var offsetZ = 0;
 
 				MoveSelected(offsetX, offsetY, offsetZ);
 			}
 
-			OldVertex = new Vertex(e.X, e.Y, 0, 1);
+			OldVertex = currentVertex;
 			FillStatusBar();
 		}
 
@@ -258,6 +288,18 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
+		void Rotate(Shape shape, double alpha, double tetta, double radius)
+		{
+			var matrix = new double[] {
+				Cos(alpha), Sin(alpha) * Sin(tetta),	0,	Sin(alpha) * Cos(tetta) / radius,
+				0,			Cos(tetta),					0,	-Sin(tetta)/radius,
+				Sin(alpha), -Cos(alpha) * Sin(tetta),	0,	-Cos(alpha) * Cos(tetta) / radius,
+				0,			0,							0,	1
+			};
+
+			shape?.Transform(matrix);
+		}
+
 		#endregion
 
 		void ReloadScene()
@@ -281,14 +323,27 @@ namespace CG
 				uniformCoordinate: 1);
 		}
 
-		void RedrawAllShapes()
+		void DrawShape(Shape shape, Pen pen)
+		{
+			var tempShape = (Shape)shape.Clone();
+			ToPoint(
+				shape: tempShape,
+				xFactor: PictureBox.Image.Width / 2,
+				yFactor: PictureBox.Image.Height / 2);
+			tempShape.Draw(Graphics, pen);
+		}
+
+		void RedrawShapesExceptSelected()
 		{
 			foreach (var i in Shapes.Except(Selected)) {
-				i.Draw(Graphics, Pens.Black);
+				DrawShape(i, Pens.Black);
 			}
+		}
 
+		void RedrawSelected()
+		{
 			foreach (var i in Selected) {
-				i.Draw(Graphics, Pens.Blue);
+				DrawShape(i, Pens.Blue);
 			}
 		}
 
@@ -318,7 +373,8 @@ namespace CG
 			}
 
 			ReloadScene();
-			RedrawAllShapes();
+			RedrawSelected();
+			RedrawShapesExceptSelected();
 			PictureBox.Refresh();
 		}
 
@@ -332,7 +388,8 @@ namespace CG
 				}
 
 				ReloadScene();
-				RedrawAllShapes();
+				RedrawSelected();
+				RedrawShapesExceptSelected();
 				PictureBox.Refresh();
 			}
 		}
@@ -344,22 +401,17 @@ namespace CG
 			}
 
 			ReloadScene();
-			RedrawAllShapes();
+			RedrawSelected();
+			RedrawShapesExceptSelected();
 			PictureBox.Refresh();
 		}
 
 		void FillStatusBar()
 		{
-			ToVertex(OldVertex, PictureBox.Image.Width / 2, PictureBox.Image.Height / 2);
-			ToVertex(Selected.FirstOrDefault(), PictureBox.Image.Width / 2, PictureBox.Image.Height / 2);
-
 			StatusBar.Text =
 				$"Shapes: {Shapes.Count}, " +
 				$"Cursor: {OldVertex}, " +
 				$"Equation: {Selected.FirstOrDefault()}";
-
-			ToPoint(OldVertex, PictureBox.Image.Width / 2, PictureBox.Image.Height / 2);
-			ToPoint(Selected.FirstOrDefault(), PictureBox.Image.Width / 2, PictureBox.Image.Height / 2);
 		}
 	}
 }
