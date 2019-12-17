@@ -300,6 +300,18 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
+		void RotateOnX(Shape shape, double angle)
+		{
+			var matrix = new double[] {
+				1,	0,				0,  0,
+				0,	Cos(angle),		Sin(angle),  0,
+				0,	-Sin(angle),	Cos(angle),  0,
+				0,	0,				0,  1
+			};
+
+			shape?.Transform(matrix);
+		}
+
 		#endregion
 
 		void ReloadScene()
@@ -330,6 +342,14 @@ namespace CG
 				shape: tempShape,
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
+
+			if (tempShape is SubVertex subvertex) {
+				ToPoint(
+				shape: subvertex.Origin,
+				xFactor: PictureBox.Image.Width / 2,
+				yFactor: PictureBox.Image.Height / 2);
+			}
+
 			tempShape.Draw(Graphics, pen);
 		}
 
@@ -381,6 +401,10 @@ namespace CG
 		void SelectManyShapes(Vertex vertex)
 		{
 			if (GetNearestShape(vertex) is Shape nearest) {
+				if (nearest is SubVertex subvertex) {
+					nearest = subvertex.Origin;
+				}
+
 				if (Selected.Contains(nearest)) {
 					Selected.Remove(nearest);
 				} else {
@@ -401,8 +425,8 @@ namespace CG
 			}
 
 			ReloadScene();
-			RedrawSelected();
 			RedrawShapesExceptSelected();
+			RedrawSelected();
 			PictureBox.Refresh();
 		}
 

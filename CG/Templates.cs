@@ -165,25 +165,25 @@ namespace CG
 
 	class Cut : Shape
 	{
-		public Vertex A;
-		public Vertex B;
+		public SubVertex A;
+		public SubVertex B;
 
 		public Cut(Vertex a, Vertex b)
 		{
-			A = a;
-			B = b;
+			A = new SubVertex(a, this);
+			B = new SubVertex(b, this);
 		}
 
 		public override object Clone()
 		{
-			return new Cut((Vertex)A.Clone(), (Vertex)B.Clone());
+			return new Cut((Vertex)A.Vertex.Clone(), (Vertex)B.Vertex.Clone());
 		}
 
 		public override void Draw(Graphics graphics, Pen pen)
 		{
-			graphics.DrawLine(pen, (int)A.X, (int)A.Y, (int)B.X, (int)B.Y);
-			A.Draw(graphics, pen);
-			B.Draw(graphics, pen);
+			graphics.DrawLine(pen, (int)A.Vertex.X, (int)A.Vertex.Y, (int)B.Vertex.X, (int)B.Vertex.Y);
+			A.Vertex.Draw(graphics, pen);
+			B.Vertex.Draw(graphics, pen);
 		}
 
 		public override bool Equals(object obj)
@@ -199,18 +199,18 @@ namespace CG
 
 		public override double GetDistance(Vertex vertex)
 		{
-			return GetSpace(vertex) * 2 / A.GetDistance(B);
+			return GetSpace(vertex) * 2 / A.GetDistance(B.Vertex);
 		}
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
-			if (A.GetIntersection(vertex, epsilon) is Vertex a) {
-				return new SubVertex(a, this);
-			} else if (B.GetIntersection(vertex, epsilon) is Vertex b) {
-				return new SubVertex(b, this);
+			if (A.GetIntersection(vertex, epsilon) is Vertex) {
+				return A;
+			} else if (B.GetIntersection(vertex, epsilon) is Vertex) {
+				return B;
 			} else if (
 				GetDistance(vertex) <= epsilon &&
-				A.GetDistance(vertex) + B.GetDistance(vertex) <= A.GetDistance(B) + epsilon) {
+				A.GetDistance(vertex) + B.GetDistance(vertex) <= A.GetDistance(B.Vertex) + epsilon) {
 				return this;
 			} else {
 				return null;
@@ -219,17 +219,17 @@ namespace CG
 
 		public double GetSpace(Vertex vertex)
 		{
-			return 1d / 2 * Abs((B.Y - A.Y) * vertex.X - (B.X - A.X) * vertex.Y + B.X * A.Y - B.Y * A.X);
+			return 1d / 2 * Abs((B.Vertex.Y - A.Vertex.Y) * vertex.X - (B.Vertex.X - A.Vertex.X) * vertex.Y + B.Vertex.X * A.Vertex.Y - B.Vertex.Y * A.Vertex.X);
 		}
 
 		public override void Transform(double[] matrix)
 		{
-			Transform(new Vertex[] { A, B }, matrix);
+			Transform(new Vertex[] { A.Vertex, B.Vertex }, matrix);
 		}
 
 		public override string ToString()
 		{
-			return $"x - ({A.X}) / {(B.X - A.X)} = y - ({A.Y}) / {(B.Y - A.Y)} = z - ({A.Z}) / {(B.Z - A.Z)}";
+			return $"x - ({A.Vertex.X}) / {(B.Vertex.X - A.Vertex.X)} = y - ({A.Vertex.Y}) / {(B.Vertex.Y - A.Vertex.Y)} = z - ({A.Vertex.Z}) / {(B.Vertex.Z - A.Vertex.Z)}";
 		}
 	}
 
