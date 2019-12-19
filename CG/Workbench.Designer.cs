@@ -169,8 +169,9 @@
 			// Alpha
 			// 
 			this.Alpha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Alpha.LargeChange = 1;
 			this.Alpha.Location = new System.Drawing.Point(632, 258);
-			this.Alpha.Maximum = 179;
+			this.Alpha.Maximum = 180;
 			this.Alpha.Name = "Alpha";
 			this.Alpha.Size = new System.Drawing.Size(140, 45);
 			this.Alpha.TabIndex = 10;
@@ -203,8 +204,9 @@
 			// Tetta
 			// 
 			this.Tetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Tetta.LargeChange = 1;
 			this.Tetta.Location = new System.Drawing.Point(632, 322);
-			this.Tetta.Maximum = 179;
+			this.Tetta.Maximum = 180;
 			this.Tetta.Name = "Tetta";
 			this.Tetta.Size = new System.Drawing.Size(140, 45);
 			this.Tetta.TabIndex = 14;
@@ -272,13 +274,15 @@
 			// Zetta
 			// 
 			this.Zetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Zetta.LargeChange = 1;
 			this.Zetta.Location = new System.Drawing.Point(632, 386);
-			this.Zetta.Maximum = 179;
+			this.Zetta.Maximum = 180;
 			this.Zetta.Name = "Zetta";
 			this.Zetta.Size = new System.Drawing.Size(140, 45);
 			this.Zetta.TabIndex = 22;
 			this.Zetta.Tag = "0";
 			this.Zetta.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.Zetta.Scroll += new System.EventHandler(this.Zetta_Scroll);
 			// 
 			// LabelOfZetta
 			// 

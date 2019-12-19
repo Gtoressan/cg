@@ -51,6 +51,12 @@ namespace CG
 				vertices[i].Y /= vertices[i].UC;
 				vertices[i].Z /= vertices[i].UC;
 				vertices[i].UC /= vertices[i].UC;
+
+				// Округление.
+				vertices[i].X = Round(vertices[i].X);
+				vertices[i].Y = Round(vertices[i].Y);
+				vertices[i].Z = Round(vertices[i].Z);
+				vertices[i].UC = Round(vertices[i].UC);
 			}
 		}
 	}
@@ -167,7 +173,7 @@ namespace CG
 			return Vertex.GetIntersection(vertex, epsilon);
 		}
 
-		public override string ToString() => $"{Origin}, {Vertex}";
+		public override string ToString() => Vertex.ToString();
 
 		public override void Transform(double[] matrix)
 		{

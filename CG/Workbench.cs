@@ -13,14 +13,20 @@ namespace CG
 {
 	public partial class Workbench : Form
 	{
+		#region Fields and properties
+
 		Graphics Graphics;
 		Random Random = new Random();
 		List<Shape> Shapes = new List<Shape>();
 		List<Shape> Selected = new List<Shape>();
 		Vertex OldVertex = new Vertex(0, 0, 0, 1);
 		Boolean IsMousePressed = false;
-		Double OldAlpha = 0d;
-		Double OldTetta = 0d;
+		Int32 OldAlpha = 0;
+		Int32 OldTetta = 0;
+		Int32 OldZetta = 0;
+		Double TouchEpsilon = 7;
+
+		#endregion
 
 		public Workbench()
 		{
@@ -169,8 +175,11 @@ namespace CG
 		private void Alpha_Scroll(object sender, EventArgs e)
 		{
 			foreach (var i in Selected) {
+				var gravityCenter = i.GetGravityCenter();
+				PreProcessor(i, gravityCenter);
 				RotateOnX(i, (Alpha.Value - OldAlpha) * PI / 180);
 				OldAlpha = Alpha.Value;
+				PostProcessor(i, gravityCenter);
 			}
 
 			ReloadScene();
@@ -182,8 +191,27 @@ namespace CG
 		private void Tetta_Scroll(object sender, EventArgs e)
 		{
 			foreach (var i in Selected) {
+				var gravityCenter = i.GetGravityCenter();
+				PreProcessor(i, gravityCenter);
 				RotateOnY(i, (Tetta.Value - OldTetta) * PI / 180);
 				OldTetta = Tetta.Value;
+				PostProcessor(i, gravityCenter);
+			}
+
+			ReloadScene();
+			DrawExceptSelected();
+			DrawSelectedShapes();
+			PictureBox.Refresh();
+		}
+
+		private void Zetta_Scroll(object sender, EventArgs e)
+		{
+			foreach (var i in Selected) {
+				var gravityCenter = i.GetGravityCenter();
+				PreProcessor(i, gravityCenter);
+				RotateOnZ(i, (Zetta.Value - OldZetta) * PI / 180);
+				OldZetta = Zetta.Value;
+				PostProcessor(i, gravityCenter);
 			}
 
 			ReloadScene();
@@ -196,18 +224,7 @@ namespace CG
 		{
 			ReloadScene();
 			DrawExceptSelected();
-
-			foreach (var i in Selected) {
-				var tempShape = (Shape)i.Clone();
-
-				MukhinRotate(
-					shape: tempShape,
-					alpha: Alpha.Value * PI / 180,
-					tetta: Tetta.Value * PI / 180,
-					radius: Radius.Value);
-				DrawShape(tempShape, Pens.Blue);
-			}
-
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 		}
 
@@ -256,7 +273,7 @@ namespace CG
 
 				var offsetX = currentVertex.X - OldVertex.X;
 				var offsetY = currentVertex.Y - OldVertex.Y;
-				var offsetZ = 0;
+				var offsetZ = currentVertex.Z - OldVertex.Z;
 
 				MoveSelected(offsetX, offsetY, offsetZ);
 			}
@@ -320,19 +337,15 @@ namespace CG
 				Sin(alpha), -Cos(alpha) * Sin(tetta),   0,  -Cos(alpha) * Cos(tetta) / radius,
 				0,          0,                          0,  1
 			};
-
-			Prepearing(shape);
-			shape?.Transform(matrix);
-			PostProcessing(shape);
 		}
 
 		void RotateOnX(Shape shape, double radians)
 		{
 			var matrix = new double[] {
-				1,	0,				0,				0,
-				0,	Cos(radians),	Sin(radians),	0,
-				0,	-Sin(radians),	Cos(radians),	0,
-				0,	0,				0,				1
+				1,  0,              0,              0,
+				0,  Cos(radians),   Sin(radians),   0,
+				0,  -Sin(radians),  Cos(radians),   0,
+				0,  0,              0,              1
 			};
 
 			shape?.Transform(matrix);
@@ -341,10 +354,10 @@ namespace CG
 		void RotateOnY(Shape shape, double radians)
 		{
 			var matrix = new double[] {
-				Cos(radians),	0,	-Sin(radians),	0,
-				0,				1,	0,				0,
-				Sin(radians),	0,	Cos(radians),	0,
-				0,				0,	0,				1
+				Cos(radians),   0,  -Sin(radians),  0,
+				0,              1,  0,              0,
+				Sin(radians),   0,  Cos(radians),   0,
+				0,              0,  0,              1
 			};
 
 			shape?.Transform(matrix);
@@ -353,10 +366,10 @@ namespace CG
 		void RotateOnZ(Shape shape, double radians)
 		{
 			var matrix = new double[] {
-				Cos(radians),	Sin(radians),	0,	0,
-				-Sin(radians),	Cos(radians),	0,	0,
-				0,				0,				1,	0,
-				0,				0,				0,	1
+				Cos(radians),   Sin(radians),   0,  0,
+				-Sin(radians),  Cos(radians),   0,  0,
+				0,              0,              1,  0,
+				0,              0,              0,  1
 			};
 
 			shape?.Transform(matrix);
@@ -365,10 +378,10 @@ namespace CG
 		void ProjectOnXY(Shape shape, double radius)
 		{
 			var matrix = new double[] {
-				0,	0,	0,	0,
-				0,	0,	0,	0,
-				0,	0,	0,	-1 / radius,
-				0,	0,	0,	1
+				1,  0,  0,  0,
+				0,  1,  0,  0,
+				0,  0,  0,  -1 / radius,
+				0,  0,  0,  1
 			};
 
 			shape?.Transform(matrix);
@@ -393,22 +406,20 @@ namespace CG
 			return new Vertex(
 				x: Random.Next(-PictureBox.Width / 2 + 10, PictureBox.Width / 2 - 10),
 				y: Random.Next(-PictureBox.Height / 2 + 10, PictureBox.Height / 2 - 10),
-				z: 1,
+				z: Random.Next(-PictureBox.Height / 2 + 10, PictureBox.Height / 2 - 10),
 				uniformCoordinate: 1);
 		}
 
-		void Prepearing(Shape shape)
+		void PreProcessor(Shape shape, Vertex gravityCenter)
 		{
 			if (UseLocalPlane.Checked && shape != null) {
-				var gravityCenter = shape?.GetGravityCenter();
 				Transport(shape, -gravityCenter.X, -gravityCenter.Y, -gravityCenter.Z);
 			}
 		}
 
-		void PostProcessing(Shape shape)
+		void PostProcessor(Shape shape, Vertex gravityCenter)
 		{
 			if (UseLocalPlane.Checked && shape != null) {
-				var gravityCenter = shape?.GetGravityCenter();
 				Transport(shape, gravityCenter.X, gravityCenter.Y, gravityCenter.Z);
 			}
 		}
@@ -416,12 +427,14 @@ namespace CG
 		void DrawShape(Shape shape, Pen pen)
 		{
 			var tempShape = (Shape)shape.Clone();
+			ProjectOnXY(tempShape, Radius.Value);
 			ToPoint(
 				shape: tempShape,
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
 
 			if (tempShape is SubVertex subVertex) {
+				ProjectOnXY(subVertex.Origin, Radius.Value);
 				ToPoint(
 					shape: subVertex.Origin,
 					xFactor: PictureBox.Image.Width / 2,
@@ -455,7 +468,7 @@ namespace CG
 
 				if (minDistance > distance) {
 					minDistance = distance;
-					nearest = i.GetIntersection(vertex, 5);
+					nearest = i.GetIntersection(vertex, TouchEpsilon);
 				}
 			}
 
@@ -512,8 +525,9 @@ namespace CG
 		{
 			StatusBar.Text =
 				$"Shapes: {Shapes.Count}, " +
+				$"Equation: {(Selected.FirstOrDefault() is Shape shape ? shape.ToString() : "n/a ")}, " +
 				$"Cursor: {OldVertex}, " +
-				$"Equation: {Selected.FirstOrDefault()}";
+				"";
 		}
 	}
 }
