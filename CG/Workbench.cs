@@ -42,7 +42,11 @@ namespace CG
 
 		private void EditSelected_Click(object sender, EventArgs e)
 		{
-
+			if (new ShapeEditor(Selected).ShowDialog() == DialogResult.OK) {
+				ReloadScene();
+				RedrawExceptSelected();
+				RedrawSelected();
+			}
 		}
 
 		private void RemoveSelected_Click(object sender, EventArgs e)
@@ -53,8 +57,8 @@ namespace CG
 
 			Selected.Clear();
 			ReloadScene();
+			RedrawExceptSelected();
 			RedrawSelected();
-			RedrawShapesExceptSelected();
 			PictureBox.Refresh();
 			FillStatusBar();
 		}
@@ -85,7 +89,7 @@ namespace CG
 				z: 0);
 			DrawShape(plane, Pens.LightGray);
 			RedrawSelected();
-			RedrawShapesExceptSelected();
+			RedrawExceptSelected();
 			PictureBox.Refresh();
 		}
 
@@ -93,7 +97,7 @@ namespace CG
 		{
 			ReloadScene();
 			RedrawSelected();
-			RedrawShapesExceptSelected();
+			RedrawExceptSelected();
 			PictureBox.Refresh();
 		}
 
@@ -140,7 +144,7 @@ namespace CG
 
 			Selected.Clear();
 			RedrawSelected();
-			RedrawShapesExceptSelected();
+			RedrawExceptSelected();
 			PictureBox.Refresh();
 			FillStatusBar();
 		}
@@ -148,7 +152,7 @@ namespace CG
 		private void Alpha_Scroll(object sender, EventArgs e)
 		{
 			ReloadScene();
-			RedrawShapesExceptSelected();
+			RedrawExceptSelected();
 
 			foreach (var i in Selected) {
 				var tempShape = (Shape)i.Clone();
@@ -162,7 +166,7 @@ namespace CG
 		private void Tetta_Scroll(object sender, EventArgs e)
 		{
 			ReloadScene();
-			RedrawShapesExceptSelected();
+			RedrawExceptSelected();
 
 			foreach (var i in Selected) {
 				var tempShape = (Shape)i.Clone();
@@ -176,7 +180,7 @@ namespace CG
 		private void Radius_Scroll(object sender, EventArgs e)
 		{
 			ReloadScene();
-			RedrawShapesExceptSelected();
+			RedrawExceptSelected();
 
 			foreach (var i in Selected) {
 				var tempShape = (Shape)i.Clone();
@@ -331,7 +335,7 @@ namespace CG
 			return new Vertex(
 				x: Random.Next(-PictureBox.Width / 2 + 10, PictureBox.Width / 2 - 10),
 				y: Random.Next(-PictureBox.Height / 2 + 10, PictureBox.Height / 2 - 10),
-				z: 0,
+				z: 5,
 				uniformCoordinate: 1);
 		}
 
@@ -353,7 +357,7 @@ namespace CG
 			tempShape.Draw(Graphics, pen);
 		}
 
-		void RedrawShapesExceptSelected()
+		void RedrawExceptSelected()
 		{
 			foreach (var i in Shapes.Except(Selected)) {
 				DrawShape(i, Pens.Black);
@@ -393,8 +397,8 @@ namespace CG
 			}
 
 			ReloadScene();
+			RedrawExceptSelected();
 			RedrawSelected();
-			RedrawShapesExceptSelected();
 			PictureBox.Refresh();
 		}
 
@@ -412,8 +416,8 @@ namespace CG
 				}
 
 				ReloadScene();
+				RedrawExceptSelected();
 				RedrawSelected();
-				RedrawShapesExceptSelected();
 				PictureBox.Refresh();
 			}
 		}
@@ -425,7 +429,7 @@ namespace CG
 			}
 
 			ReloadScene();
-			RedrawShapesExceptSelected();
+			RedrawExceptSelected();
 			RedrawSelected();
 			PictureBox.Refresh();
 		}

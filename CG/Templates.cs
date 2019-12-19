@@ -75,7 +75,7 @@ namespace CG
 
 		public override void Draw(Graphics graphics, Pen pen)
 		{
-			graphics.DrawEllipse(pen, (int)X - 1, (int)Y - 1, 2, 2);
+			graphics.DrawEllipse(pen, (int)X - 2, (int)Y - 2, 4, 4);
 		}
 
 		public override bool Equals(object obj)

@@ -177,13 +177,13 @@
 			// 
 			this.Radius.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Radius.Location = new System.Drawing.Point(632, 386);
-			this.Radius.Maximum = 725;
-			this.Radius.Minimum = 700;
+			this.Radius.Maximum = 2000;
+			this.Radius.Minimum = 50;
 			this.Radius.Name = "Radius";
 			this.Radius.Size = new System.Drawing.Size(140, 45);
 			this.Radius.TabIndex = 12;
 			this.Radius.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.Radius.Value = 700;
+			this.Radius.Value = 50;
 			this.Radius.Scroll += new System.EventHandler(this.Radius_Scroll);
 			// 
 			// LabelOfRadius
