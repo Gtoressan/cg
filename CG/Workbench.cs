@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using static System.Math;
 
 namespace CG
@@ -74,6 +73,15 @@ namespace CG
 			FillStatusBar();
 		}
 
+		private void SelectAll_Click(object sender, EventArgs e)
+		{
+			Selected.Clear();
+			Selected.AddRange(Shapes);
+			ReloadScene();
+			DrawSelectedShapes();
+			PictureBox.Refresh();
+		}
+
 		private void ClearScene_Click(object sender, EventArgs e)
 		{
 			Shapes.Clear();
@@ -84,12 +92,29 @@ namespace CG
 
 		private void ExportScene_Click(object sender, EventArgs e)
 		{
-
+			using (var fileDialog = new SaveFileDialog()) {
+				if (fileDialog.ShowDialog() == DialogResult.OK) {
+					using (var stream = new FileStream(fileDialog.FileName, FileMode.OpenOrCreate)) {
+						new BinaryFormatter().Serialize(stream, Shapes);
+					}
+				}
+			}
 		}
 
 		private void ImportScene_Click(object sender, EventArgs e)
 		{
+			using (var fileDialog = new OpenFileDialog()) {
+				if (fileDialog.ShowDialog() == DialogResult.OK) {
+					using (var stream = new FileStream(fileDialog.FileName, FileMode.Open)) {
+						Shapes = (List<Shape>)new BinaryFormatter().Deserialize(stream);
+						Selected.Clear();
+					}
+				}
+			}
 
+			ReloadScene();
+			DrawExceptSelected();
+			PictureBox.Refresh();
 		}
 
 		private void ToggleGlobalPlane_MouseDown(object sender, MouseEventArgs e)

@@ -51,6 +51,7 @@
 			this.AddMedian = new System.Windows.Forms.Button();
 			this.Height = new System.Windows.Forms.Button();
 			this.Bisector = new System.Windows.Forms.Button();
+			this.SelectAll = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.Alpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Radius)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).BeginInit();
@@ -110,7 +111,7 @@
 			this.ExportScene.Name = "ExportScene";
 			this.ExportScene.Size = new System.Drawing.Size(67, 26);
 			this.ExportScene.TabIndex = 4;
-			this.ExportScene.Text = "Export";
+			this.ExportScene.Text = "Export...";
 			this.ExportScene.UseVisualStyleBackColor = true;
 			this.ExportScene.Click += new System.EventHandler(this.ExportScene_Click);
 			// 
@@ -121,7 +122,7 @@
 			this.ImportScene.Name = "ImportScene";
 			this.ImportScene.Size = new System.Drawing.Size(67, 26);
 			this.ImportScene.TabIndex = 5;
-			this.ImportScene.Text = "Import";
+			this.ImportScene.Text = "Import...";
 			this.ImportScene.UseVisualStyleBackColor = true;
 			this.ImportScene.Click += new System.EventHandler(this.ImportScene_Click);
 			// 
@@ -330,11 +331,23 @@
 			this.Bisector.UseVisualStyleBackColor = true;
 			this.Bisector.Click += new System.EventHandler(this.Bisector_Click);
 			// 
+			// SelectAll
+			// 
+			this.SelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SelectAll.Location = new System.Drawing.Point(632, 529);
+			this.SelectAll.Name = "SelectAll";
+			this.SelectAll.Size = new System.Drawing.Size(140, 22);
+			this.SelectAll.TabIndex = 26;
+			this.SelectAll.Text = "Select all";
+			this.SelectAll.UseVisualStyleBackColor = true;
+			this.SelectAll.Click += new System.EventHandler(this.SelectAll_Click);
+			// 
 			// Workbench
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 561);
+			this.Controls.Add(this.SelectAll);
 			this.Controls.Add(this.Bisector);
 			this.Controls.Add(this.Height);
 			this.Controls.Add(this.AddMedian);
@@ -399,5 +412,6 @@
 		private System.Windows.Forms.Button AddMedian;
 		private System.Windows.Forms.Button Height;
 		private System.Windows.Forms.Button Bisector;
+		private System.Windows.Forms.Button SelectAll;
 	}
 }

@@ -8,6 +8,7 @@ using static System.Math;
 
 namespace CG
 {
+	[Serializable]
 	abstract class Shape : ICloneable
 	{
 		public abstract object Clone();
@@ -60,6 +61,8 @@ namespace CG
 			}
 		}
 	}
+
+	[Serializable]
 
 	class Vertex : Shape
 	{
@@ -126,6 +129,8 @@ namespace CG
 		}
 	}
 
+	[Serializable]
+
 	class SubVertex : Shape
 	{
 		public Shape Origin;
@@ -180,6 +185,8 @@ namespace CG
 			Transform(new Vertex[] { Vertex }, matrix);
 		}
 	}
+
+	[Serializable]
 
 	class Cut : Shape
 	{
@@ -260,6 +267,8 @@ namespace CG
 		}
 	}
 
+	[Serializable]
+
 	class Plane : Shape
 	{
 		public Cut OX;
@@ -328,6 +337,8 @@ namespace CG
 		}
 	}
 
+	[Serializable]
+
 	class Group : Shape
 	{
 		public List<Shape> Shapes = new List<Shape>();
@@ -352,7 +363,17 @@ namespace CG
 
 		public override double GetDistance(Vertex vertex)
 		{
-			return Shapes.Min(x => x.GetDistance(vertex));
+			var minDistance = Shapes.FirstOrDefault()?.GetDistance(vertex);
+
+			foreach (var i in Shapes.Skip(1)) {
+				var distance = i.GetDistance(vertex);
+
+				if (distance < minDistance) {
+					minDistance = distance;
+				}
+			}
+
+			return minDistance ?? double.MaxValue;
 		}
 
 		public override Vertex GetGravityCenter()
