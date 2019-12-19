@@ -44,9 +44,14 @@
 			this.LabelOfTetta = new System.Windows.Forms.Label();
 			this.PictureBox = new System.Windows.Forms.PictureBox();
 			this.StatusBar = new System.Windows.Forms.RichTextBox();
-			this.Zetta = new System.Windows.Forms.TrackBar();
-			this.LabelOfDelta = new System.Windows.Forms.Label();
 			this.EditSelected = new System.Windows.Forms.Button();
+			this.UseLocalPlane = new System.Windows.Forms.CheckBox();
+			this.Zetta = new System.Windows.Forms.TrackBar();
+			this.LabelOfZetta = new System.Windows.Forms.Label();
+			this.AddMedian = new System.Windows.Forms.Button();
+			this.Height = new System.Windows.Forms.Button();
+			this.Bisector = new System.Windows.Forms.Button();
+			this.SelectAll = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.Alpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Radius)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).BeginInit();
@@ -106,7 +111,7 @@
 			this.ExportScene.Name = "ExportScene";
 			this.ExportScene.Size = new System.Drawing.Size(67, 26);
 			this.ExportScene.TabIndex = 4;
-			this.ExportScene.Text = "Export";
+			this.ExportScene.Text = "Export...";
 			this.ExportScene.UseVisualStyleBackColor = true;
 			this.ExportScene.Click += new System.EventHandler(this.ExportScene_Click);
 			// 
@@ -117,7 +122,7 @@
 			this.ImportScene.Name = "ImportScene";
 			this.ImportScene.Size = new System.Drawing.Size(67, 26);
 			this.ImportScene.TabIndex = 5;
-			this.ImportScene.Text = "Import";
+			this.ImportScene.Text = "Import...";
 			this.ImportScene.UseVisualStyleBackColor = true;
 			this.ImportScene.Click += new System.EventHandler(this.ImportScene_Click);
 			// 
@@ -126,7 +131,7 @@
 			this.ToggleLocalPlane.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ToggleLocalPlane.Location = new System.Drawing.Point(632, 172);
 			this.ToggleLocalPlane.Name = "ToggleLocalPlane";
-			this.ToggleLocalPlane.Size = new System.Drawing.Size(140, 26);
+			this.ToggleLocalPlane.Size = new System.Drawing.Size(119, 26);
 			this.ToggleLocalPlane.TabIndex = 6;
 			this.ToggleLocalPlane.Text = "Toggle local plane";
 			this.ToggleLocalPlane.UseVisualStyleBackColor = true;
@@ -168,8 +173,9 @@
 			// Alpha
 			// 
 			this.Alpha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Alpha.LargeChange = 1;
 			this.Alpha.Location = new System.Drawing.Point(632, 258);
-			this.Alpha.Maximum = 179;
+			this.Alpha.Maximum = 180;
 			this.Alpha.Name = "Alpha";
 			this.Alpha.Size = new System.Drawing.Size(140, 45);
 			this.Alpha.TabIndex = 10;
@@ -180,13 +186,13 @@
 			// 
 			this.Radius.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Radius.Location = new System.Drawing.Point(632, 450);
-			this.Radius.Maximum = 1025;
-			this.Radius.Minimum = 1000;
+			this.Radius.Maximum = 2000;
+			this.Radius.Minimum = 50;
 			this.Radius.Name = "Radius";
 			this.Radius.Size = new System.Drawing.Size(140, 45);
 			this.Radius.TabIndex = 12;
 			this.Radius.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.Radius.Value = 1000;
+			this.Radius.Value = 2000;
 			this.Radius.Scroll += new System.EventHandler(this.Radius_Scroll);
 			// 
 			// LabelOfRadius
@@ -202,11 +208,13 @@
 			// Tetta
 			// 
 			this.Tetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Tetta.LargeChange = 1;
 			this.Tetta.Location = new System.Drawing.Point(632, 322);
-			this.Tetta.Maximum = 179;
+			this.Tetta.Maximum = 180;
 			this.Tetta.Name = "Tetta";
 			this.Tetta.Size = new System.Drawing.Size(140, 45);
 			this.Tetta.TabIndex = 14;
+			this.Tetta.Tag = "0";
 			this.Tetta.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.Tetta.Scroll += new System.EventHandler(this.Tetta_Scroll);
 			// 
@@ -247,27 +255,6 @@
 			this.StatusBar.TabIndex = 16;
 			this.StatusBar.Text = "";
 			// 
-			// Zetta
-			// 
-			this.Zetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Zetta.Location = new System.Drawing.Point(632, 386);
-			this.Zetta.Maximum = 179;
-			this.Zetta.Name = "Zetta";
-			this.Zetta.Size = new System.Drawing.Size(140, 45);
-			this.Zetta.TabIndex = 18;
-			this.Zetta.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.Zetta.Scroll += new System.EventHandler(this.Zetta_Scroll);
-			// 
-			// LabelOfDelta
-			// 
-			this.LabelOfDelta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.LabelOfDelta.AutoSize = true;
-			this.LabelOfDelta.Location = new System.Drawing.Point(629, 370);
-			this.LabelOfDelta.Name = "LabelOfDelta";
-			this.LabelOfDelta.Size = new System.Drawing.Size(88, 13);
-			this.LabelOfDelta.TabIndex = 17;
-			this.LabelOfDelta.Text = "Rotate on Z-axis:";
-			// 
 			// EditSelected
 			// 
 			this.EditSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -279,14 +266,95 @@
 			this.EditSelected.UseVisualStyleBackColor = true;
 			this.EditSelected.Click += new System.EventHandler(this.EditSelected_Click);
 			// 
+			// UseLocalPlane
+			// 
+			this.UseLocalPlane.AutoSize = true;
+			this.UseLocalPlane.Location = new System.Drawing.Point(757, 179);
+			this.UseLocalPlane.Name = "UseLocalPlane";
+			this.UseLocalPlane.Size = new System.Drawing.Size(15, 14);
+			this.UseLocalPlane.TabIndex = 20;
+			this.UseLocalPlane.UseVisualStyleBackColor = true;
+			// 
+			// Zetta
+			// 
+			this.Zetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Zetta.LargeChange = 1;
+			this.Zetta.Location = new System.Drawing.Point(632, 386);
+			this.Zetta.Maximum = 180;
+			this.Zetta.Name = "Zetta";
+			this.Zetta.Size = new System.Drawing.Size(140, 45);
+			this.Zetta.TabIndex = 22;
+			this.Zetta.Tag = "0";
+			this.Zetta.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.Zetta.Scroll += new System.EventHandler(this.Zetta_Scroll);
+			// 
+			// LabelOfZetta
+			// 
+			this.LabelOfZetta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.LabelOfZetta.AutoSize = true;
+			this.LabelOfZetta.Location = new System.Drawing.Point(629, 370);
+			this.LabelOfZetta.Name = "LabelOfZetta";
+			this.LabelOfZetta.Size = new System.Drawing.Size(88, 13);
+			this.LabelOfZetta.TabIndex = 21;
+			this.LabelOfZetta.Text = "Rotate on Z-axis:";
+			// 
+			// AddMedian
+			// 
+			this.AddMedian.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.AddMedian.Location = new System.Drawing.Point(632, 501);
+			this.AddMedian.Name = "AddMedian";
+			this.AddMedian.Size = new System.Drawing.Size(43, 22);
+			this.AddMedian.TabIndex = 23;
+			this.AddMedian.Text = "Median";
+			this.AddMedian.UseVisualStyleBackColor = true;
+			this.AddMedian.Click += new System.EventHandler(this.AddMedian_Click);
+			// 
+			// Height
+			// 
+			this.Height.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Height.Location = new System.Drawing.Point(681, 501);
+			this.Height.Name = "Height";
+			this.Height.Size = new System.Drawing.Size(42, 22);
+			this.Height.TabIndex = 24;
+			this.Height.Text = "Height";
+			this.Height.UseVisualStyleBackColor = true;
+			this.Height.Click += new System.EventHandler(this.Height_Click);
+			// 
+			// Bisector
+			// 
+			this.Bisector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Bisector.Location = new System.Drawing.Point(729, 501);
+			this.Bisector.Name = "Bisector";
+			this.Bisector.Size = new System.Drawing.Size(43, 22);
+			this.Bisector.TabIndex = 25;
+			this.Bisector.Text = "Bisector";
+			this.Bisector.UseVisualStyleBackColor = true;
+			this.Bisector.Click += new System.EventHandler(this.Bisector_Click);
+			// 
+			// SelectAll
+			// 
+			this.SelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SelectAll.Location = new System.Drawing.Point(632, 529);
+			this.SelectAll.Name = "SelectAll";
+			this.SelectAll.Size = new System.Drawing.Size(140, 22);
+			this.SelectAll.TabIndex = 26;
+			this.SelectAll.Text = "Select all";
+			this.SelectAll.UseVisualStyleBackColor = true;
+			this.SelectAll.Click += new System.EventHandler(this.SelectAll_Click);
+			// 
 			// Workbench
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 561);
-			this.Controls.Add(this.EditSelected);
+			this.Controls.Add(this.SelectAll);
+			this.Controls.Add(this.Bisector);
+			this.Controls.Add(this.Height);
+			this.Controls.Add(this.AddMedian);
 			this.Controls.Add(this.Zetta);
-			this.Controls.Add(this.LabelOfDelta);
+			this.Controls.Add(this.LabelOfZetta);
+			this.Controls.Add(this.UseLocalPlane);
+			this.Controls.Add(this.EditSelected);
 			this.Controls.Add(this.StatusBar);
 			this.Controls.Add(this.Tetta);
 			this.Controls.Add(this.LabelOfTetta);
@@ -337,8 +405,13 @@
 		private System.Windows.Forms.Label LabelOfTetta;
 		private System.Windows.Forms.PictureBox PictureBox;
 		private System.Windows.Forms.RichTextBox StatusBar;
-		private System.Windows.Forms.TrackBar Zetta;
-		private System.Windows.Forms.Label LabelOfDelta;
 		private System.Windows.Forms.Button EditSelected;
+		private System.Windows.Forms.CheckBox UseLocalPlane;
+		private System.Windows.Forms.TrackBar Zetta;
+		private System.Windows.Forms.Label LabelOfZetta;
+		private System.Windows.Forms.Button AddMedian;
+		private System.Windows.Forms.Button Height;
+		private System.Windows.Forms.Button Bisector;
+		private System.Windows.Forms.Button SelectAll;
 	}
 }

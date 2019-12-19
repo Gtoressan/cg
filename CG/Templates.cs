@@ -8,6 +8,7 @@ using static System.Math;
 
 namespace CG
 {
+	[Serializable]
 	abstract class Shape : ICloneable
 	{
 		public abstract object Clone();
@@ -17,6 +18,8 @@ namespace CG
 		public abstract Shape GetIntersection(Vertex vertex, double epsilon);
 
 		public abstract double GetDistance(Vertex vertex);
+
+		public abstract Vertex GetGravityCenter();
 
 		public abstract void Transform(double[] matrix);
 
@@ -49,9 +52,17 @@ namespace CG
 				vertices[i].Y /= vertices[i].UC;
 				vertices[i].Z /= vertices[i].UC;
 				vertices[i].UC /= vertices[i].UC;
+
+				// Округление.
+				vertices[i].X = Round(vertices[i].X);
+				vertices[i].Y = Round(vertices[i].Y);
+				vertices[i].Z = Round(vertices[i].Z);
+				vertices[i].UC = Round(vertices[i].UC);
 			}
 		}
 	}
+
+	[Serializable]
 
 	class Vertex : Shape
 	{
@@ -96,6 +107,11 @@ namespace CG
 			return Sqrt(Pow(vertex.Y - Y, 2) + Pow(vertex.X - X, 2));
 		}
 
+		public override Vertex GetGravityCenter()
+		{
+			return (Vertex)Clone();
+		}
+
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
 			if (GetDistance(vertex) <= epsilon) {
@@ -112,6 +128,8 @@ namespace CG
 			Transform(new Vertex[] { this }, matrix);
 		}
 	}
+
+	[Serializable]
 
 	class SubVertex : Shape
 	{
@@ -150,12 +168,17 @@ namespace CG
 			return Vertex.GetDistance(vertex);
 		}
 
+		public override Vertex GetGravityCenter()
+		{
+			return Origin.GetGravityCenter();
+		}
+
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
 			return Vertex.GetIntersection(vertex, epsilon);
 		}
 
-		public override string ToString() => $"{Origin} - {Vertex}";
+		public override string ToString() => Vertex.ToString();
 
 		public override void Transform(double[] matrix)
 		{
@@ -163,27 +186,29 @@ namespace CG
 		}
 	}
 
+	[Serializable]
+
 	class Cut : Shape
 	{
-		public Vertex A;
-		public Vertex B;
+		public SubVertex A;
+		public SubVertex B;
 
 		public Cut(Vertex a, Vertex b)
 		{
-			A = a;
-			B = b;
+			A = new SubVertex(a, this);
+			B = new SubVertex(b, this);
 		}
 
 		public override object Clone()
 		{
-			return new Cut((Vertex)A.Clone(), (Vertex)B.Clone());
+			return new Cut((Vertex)A.Vertex.Clone(), (Vertex)B.Vertex.Clone());
 		}
 
 		public override void Draw(Graphics graphics, Pen pen)
 		{
-			graphics.DrawLine(pen, (int)A.X, (int)A.Y, (int)B.X, (int)B.Y);
-			A.Draw(graphics, pen);
-			B.Draw(graphics, pen);
+			graphics.DrawLine(pen, (int)A.Vertex.X, (int)A.Vertex.Y, (int)B.Vertex.X, (int)B.Vertex.Y);
+			A.Vertex.Draw(graphics, pen);
+			B.Vertex.Draw(graphics, pen);
 		}
 
 		public override bool Equals(object obj)
@@ -199,18 +224,27 @@ namespace CG
 
 		public override double GetDistance(Vertex vertex)
 		{
-			return GetSpace(vertex) * 2 / A.GetDistance(B);
+			return GetSpace(vertex) * 2 / A.GetDistance(B.Vertex);
+		}
+
+		public override Vertex GetGravityCenter()
+		{
+			return new Vertex(
+				x: (A.Vertex.X + B.Vertex.X) / 2,
+				y: (A.Vertex.Y + B.Vertex.Y) / 2,
+				z: (A.Vertex.Z + B.Vertex.Z) / 2,
+				uniformCoordinate: 1);
 		}
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
-			if (A.GetIntersection(vertex, epsilon) is Vertex a) {
-				return new SubVertex(a, this);
-			} else if (B.GetIntersection(vertex, epsilon) is Vertex b) {
-				return new SubVertex(b, this);
+			if (A.GetIntersection(vertex, epsilon) is Vertex) {
+				return A;
+			} else if (B.GetIntersection(vertex, epsilon) is Vertex) {
+				return B;
 			} else if (
 				GetDistance(vertex) <= epsilon &&
-				A.GetDistance(vertex) + B.GetDistance(vertex) <= A.GetDistance(B) + epsilon) {
+				A.GetDistance(vertex) + B.GetDistance(vertex) <= A.GetDistance(B.Vertex) + epsilon) {
 				return this;
 			} else {
 				return null;
@@ -219,14 +253,21 @@ namespace CG
 
 		public double GetSpace(Vertex vertex)
 		{
-			return 1d / 2 * Abs((B.Y - A.Y) * vertex.X - (B.X - A.X) * vertex.Y + B.X * A.Y - B.Y * A.X);
+			return 1d / 2 * Abs((B.Vertex.Y - A.Vertex.Y) * vertex.X - (B.Vertex.X - A.Vertex.X) * vertex.Y + B.Vertex.X * A.Vertex.Y - B.Vertex.Y * A.Vertex.X);
 		}
 
 		public override void Transform(double[] matrix)
 		{
-			Transform(new Vertex[] { A, B }, matrix);
+			Transform(new Vertex[] { A.Vertex, B.Vertex }, matrix);
+		}
+
+		public override string ToString()
+		{
+			return $"x - ({A.Vertex.X}) / {(B.Vertex.X - A.Vertex.X)} = y - ({A.Vertex.Y}) / {(B.Vertex.Y - A.Vertex.Y)} = z - ({A.Vertex.Z}) / {(B.Vertex.Z - A.Vertex.Z)}";
 		}
 	}
+
+	[Serializable]
 
 	class Plane : Shape
 	{
@@ -266,6 +307,15 @@ namespace CG
 				OZ.GetDistance(vertex));
 		}
 
+		public override Vertex GetGravityCenter()
+		{
+			return new Vertex(
+				x: (OX.GetGravityCenter().X + OY.GetGravityCenter().X + OZ.GetGravityCenter().Z) / 3,
+				y: (OX.GetGravityCenter().Y + OY.GetGravityCenter().Y + OZ.GetGravityCenter().Y) / 3,
+				z: (OX.GetGravityCenter().Z + OY.GetGravityCenter().Z + OZ.GetGravityCenter().Z) / 3,
+				uniformCoordinate: 1);
+		}
+
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
 			if (OX.GetIntersection(vertex, epsilon) is Shape ox) {
@@ -286,6 +336,8 @@ namespace CG
 			OZ.Transform(matrix);
 		}
 	}
+
+	[Serializable]
 
 	class Group : Shape
 	{
@@ -311,7 +363,37 @@ namespace CG
 
 		public override double GetDistance(Vertex vertex)
 		{
-			return Shapes.Min(x => x.GetDistance(vertex));
+			var minDistance = Shapes.FirstOrDefault()?.GetDistance(vertex);
+
+			foreach (var i in Shapes.Skip(1)) {
+				var distance = i.GetDistance(vertex);
+
+				if (distance < minDistance) {
+					minDistance = distance;
+				}
+			}
+
+			return minDistance ?? double.MaxValue;
+		}
+
+		public override Vertex GetGravityCenter()
+		{
+			var currentX = 0d;
+			var currentY = 0d;
+			var currentZ = 0d;
+
+			foreach (var i in Shapes) {
+				var gravityCenter = i.GetGravityCenter();
+				currentX += gravityCenter.X;
+				currentY += gravityCenter.Y;
+				currentZ += gravityCenter.Z;
+			}
+
+			return new Vertex(
+				x: currentX / Shapes.Count,
+				y: currentY / Shapes.Count,
+				z: currentZ / Shapes.Count,
+				uniformCoordinate: 1);
 		}
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
@@ -330,6 +412,11 @@ namespace CG
 			foreach (var i in Shapes) {
 				i.Transform(matrix);
 			}
+		}
+
+		public override string ToString()
+		{
+			return Shapes.FirstOrDefault()?.ToString() ?? "Empty group";
 		}
 	}
 }
