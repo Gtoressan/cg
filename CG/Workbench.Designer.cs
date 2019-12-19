@@ -48,6 +48,9 @@
 			this.UseLocalPlane = new System.Windows.Forms.CheckBox();
 			this.Zetta = new System.Windows.Forms.TrackBar();
 			this.LabelOfZetta = new System.Windows.Forms.Label();
+			this.AddMedian = new System.Windows.Forms.Button();
+			this.Height = new System.Windows.Forms.Button();
+			this.Bisector = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.Alpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Radius)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).BeginInit();
@@ -294,11 +297,47 @@
 			this.LabelOfZetta.TabIndex = 21;
 			this.LabelOfZetta.Text = "Rotate on Z-axis:";
 			// 
+			// AddMedian
+			// 
+			this.AddMedian.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.AddMedian.Location = new System.Drawing.Point(632, 501);
+			this.AddMedian.Name = "AddMedian";
+			this.AddMedian.Size = new System.Drawing.Size(43, 22);
+			this.AddMedian.TabIndex = 23;
+			this.AddMedian.Text = "Median";
+			this.AddMedian.UseVisualStyleBackColor = true;
+			this.AddMedian.Click += new System.EventHandler(this.AddMedian_Click);
+			// 
+			// Height
+			// 
+			this.Height.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Height.Location = new System.Drawing.Point(681, 501);
+			this.Height.Name = "Height";
+			this.Height.Size = new System.Drawing.Size(42, 22);
+			this.Height.TabIndex = 24;
+			this.Height.Text = "Height";
+			this.Height.UseVisualStyleBackColor = true;
+			this.Height.Click += new System.EventHandler(this.Height_Click);
+			// 
+			// Bisector
+			// 
+			this.Bisector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Bisector.Location = new System.Drawing.Point(729, 501);
+			this.Bisector.Name = "Bisector";
+			this.Bisector.Size = new System.Drawing.Size(43, 22);
+			this.Bisector.TabIndex = 25;
+			this.Bisector.Text = "Bisector";
+			this.Bisector.UseVisualStyleBackColor = true;
+			this.Bisector.Click += new System.EventHandler(this.Bisector_Click);
+			// 
 			// Workbench
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 561);
+			this.Controls.Add(this.Bisector);
+			this.Controls.Add(this.Height);
+			this.Controls.Add(this.AddMedian);
 			this.Controls.Add(this.Zetta);
 			this.Controls.Add(this.LabelOfZetta);
 			this.Controls.Add(this.UseLocalPlane);
@@ -357,5 +396,8 @@
 		private System.Windows.Forms.CheckBox UseLocalPlane;
 		private System.Windows.Forms.TrackBar Zetta;
 		private System.Windows.Forms.Label LabelOfZetta;
+		private System.Windows.Forms.Button AddMedian;
+		private System.Windows.Forms.Button Height;
+		private System.Windows.Forms.Button Bisector;
 	}
 }

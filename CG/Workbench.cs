@@ -26,6 +26,8 @@ namespace CG
 		Int32 OldZetta = 0;
 		Double TouchEpsilon = 7;
 
+		public Int32 SpecialActionIndex = -1;
+
 		#endregion
 
 		public Workbench()
@@ -228,6 +230,21 @@ namespace CG
 			PictureBox.Refresh();
 		}
 
+		private void AddMedian_Click(object sender, EventArgs e)
+		{
+			SpecialActionIndex = 0;
+		}
+
+		private void Height_Click(object sender, EventArgs e)
+		{
+			SpecialActionIndex = 1;
+		}
+
+		private void Bisector_Click(object sender, EventArgs e)
+		{
+			SpecialActionIndex = 2;
+		}
+
 		#endregion
 
 		#region PictureBox event handler.
@@ -253,6 +270,7 @@ namespace CG
 				}
 			}
 
+			ProcessSpecialAction(OldVertex);
 			FillStatusBar();
 		}
 
@@ -528,6 +546,101 @@ namespace CG
 				$"Equation: {(Selected.FirstOrDefault() is Shape shape ? shape.ToString() : "n/a ")}, " +
 				$"Cursor: {OldVertex}, " +
 				"";
+		}
+
+		void ProcessSpecialAction(Vertex vertex)
+		{
+			switch (SpecialActionIndex) {
+				default: {
+					break;
+				}
+
+				// Добавить медиану.
+				case 0: {
+					if (Selected.FirstOrDefault() is Cut cut) {
+						Shapes.Add(new Cut(vertex, cut.GetGravityCenter()));
+					}
+					break;
+				}
+
+				// Добавить высоту.
+				case 1: {
+					if (Selected.FirstOrDefault() is Cut cut) {
+						var a = cut.A.Vertex.Y - cut.B.Vertex.Y;
+						var b = cut.B.Vertex.X - cut.A.Vertex.X;
+						var c = cut.A.Vertex.X * cut.B.Vertex.Y - cut.B.Vertex.X * cut.A.Vertex.Y;
+						var x = (-a * c - b * a * vertex.Y + Pow(b, 2) * vertex.X) / (Pow(b, 2) + Pow(a, 2));
+						var y = (Pow(a, 2) * vertex.Y - a * b * vertex.X - c * b) / (Pow(b, 2) + Pow(a, 2));
+						var z = 0d;
+
+						if (Abs(b) > 0.00001) {
+							z = cut.A.Vertex.Z + (cut.B.Vertex.Z - cut.A.Vertex.Z) * ((x - cut.A.Vertex.X) / a);
+						} else {
+							z = cut.A.Vertex.Z + (cut.B.Vertex.Z - cut.A.Vertex.Z) * ((y - cut.A.Vertex.Y) / b);
+						}
+
+						Shapes.Add(new Cut(vertex, new Vertex(x, y, z, 1)));
+					}
+					break;
+				}
+
+				// Добавить биссектрису.
+				case 2: {
+					if (Selected.Count == 2 &&
+						Selected.First() is Cut cut1 &&
+						Selected.Skip(1).First() is Cut cut2) {
+						var A1 = cut1.A.Vertex;
+						var B1 = cut1.B.Vertex;
+						var A2 = cut2.A.Vertex;
+						var B2 = cut2.B.Vertex;
+						var a1 = A1.Y - B1.Y;
+						var b1 = B1.X - A1.X;
+						var c1 = A1.X * B1.Y - B1.X * A1.Y;
+						var a2 = A2.Y - B2.Y;
+						var b2 = B2.X - A2.X;
+						var c2 = A2.X * B2.Y - B2.X * A2.Y;
+
+						if (a1 * b2 - a2 * b1 == 0) {
+							return;
+						}
+
+						var x1 = (b1 * c2 - b2 * c1) / (a1 * b2 - a2 * b1);
+						var y1 = (c1 * a2 - c2 * a1) / (a1 * b2 - a2 * b1);
+						var z1 = 0d;
+
+						if (Abs(b1) > 0.00001) {
+							z1 = (A1.Z + (B1.Z - A1.Z) * (x1 - A1.X) / b1);
+						} else {
+							z1 = (A1.Z + (B1.Z - A1.Z) * (y1 - A1.Y) / a1);
+						}
+
+						var leftLengthA = Sqrt(Pow((A1.X - x1), 2) + Pow((A1.Y - y1), 2) + Pow((A1.Z - z1), 2));
+						var leftLengthB = Sqrt(Pow((B1.X - x1), 2) + Pow((B1.Y - y1), 2) + Pow((B1.Z - z1), 2));
+						Vertex maxLeft = leftLengthA > leftLengthB ? A1 : B1;
+						var leftLength = Max(leftLengthA, leftLengthB);
+
+						var rightLengthA = Sqrt(Pow((A2.X - x1), 2) + Pow((A2.Y - y1), 2) + Pow((A2.Z - z1), 2));
+						var rightLengthB = Sqrt(Pow((B2.X - x1), 2) + Pow((B2.Y - y1), 2) + Pow((B2.Z - z1), 2));
+						Vertex maxRight = rightLengthA > rightLengthB ? A2 : B2;
+						var rightLength = Max(rightLengthA, rightLengthB);
+
+						var leftMove = leftLength / (leftLength + rightLength);
+						var rightMove = rightLength / (leftLength + rightLength);
+						var x2 = (float)(rightMove * maxLeft.X + leftMove * maxRight.X);
+						var y2 = (float)(rightMove * maxLeft.Y + leftMove * maxRight.Y);
+						var z2 = (float)(rightMove * maxLeft.Z + leftMove * maxRight.Z);
+
+						Shapes.Add(new Cut(new Vertex(x1, y1, z1, 1), new Vertex(x2, y2, z2, 1)));
+					}
+					break;
+				}
+			}
+
+			SpecialActionIndex = -1;
+			ReloadScene();
+			DrawExceptSelected();
+			DrawSelectedShapes();
+			PictureBox.Refresh();
 		}
 	}
 }
