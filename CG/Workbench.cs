@@ -19,6 +19,8 @@ namespace CG
 		List<Shape> Selected = new List<Shape>();
 		Vertex OldVertex = new Vertex(0, 0, 0, 1);
 		Boolean IsMousePressed = false;
+		Double OldAlpha = 0d;
+		Double OldTetta = 0d;
 
 		public Workbench()
 		{
@@ -35,7 +37,8 @@ namespace CG
 				a: GetRandomVertex(),
 				b: GetRandomVertex());
 			Shapes.Add(cut);
-			DrawShape(cut, Pens.Black);
+			DrawExceptSelected();
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 			FillStatusBar();
 		}
@@ -44,8 +47,8 @@ namespace CG
 		{
 			if (new ShapeEditor(Selected).ShowDialog() == DialogResult.OK) {
 				ReloadScene();
-				RedrawExceptSelected();
-				RedrawSelected();
+				DrawExceptSelected();
+				DrawSelectedShapes();
 			}
 		}
 
@@ -57,8 +60,8 @@ namespace CG
 
 			Selected.Clear();
 			ReloadScene();
-			RedrawExceptSelected();
-			RedrawSelected();
+			DrawExceptSelected();
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 			FillStatusBar();
 		}
@@ -88,27 +91,41 @@ namespace CG
 				y: PictureBox.Image.Height / 2,
 				z: 0);
 			DrawShape(plane, Pens.LightGray);
-			RedrawSelected();
-			RedrawExceptSelected();
+			DrawExceptSelected();
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 		}
 
 		private void ToggleGlobalPlane_MouseUp(object sender, MouseEventArgs e)
 		{
 			ReloadScene();
-			RedrawSelected();
-			RedrawExceptSelected();
+			DrawExceptSelected();
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 		}
 
 		private void ToggleLocalPlane_MouseDown(object sender, MouseEventArgs e)
 		{
+			if (Selected.Count == 0) {
+				return;
+			}
 
+			var gravityCenter = Selected.First().GetGravityCenter();
+			var plane = new Plane(100, 100, 100);
+
+			ToPoint(plane, gravityCenter.X, gravityCenter.Y);
+			DrawShape(plane, Pens.LightGray);
+			DrawExceptSelected();
+			DrawSelectedShapes();
+			PictureBox.Refresh();
 		}
 
 		private void ToggleLocalPlane_MouseUp(object sender, MouseEventArgs e)
 		{
-
+			ReloadScene();
+			DrawExceptSelected();
+			DrawSelectedShapes();
+			PictureBox.Refresh();
 		}
 
 		private void GroupSelected_Click(object sender, EventArgs e)
@@ -143,48 +160,51 @@ namespace CG
 			}
 
 			Selected.Clear();
-			RedrawSelected();
-			RedrawExceptSelected();
+			DrawSelectedShapes();
+			DrawExceptSelected();
 			PictureBox.Refresh();
 			FillStatusBar();
 		}
 
 		private void Alpha_Scroll(object sender, EventArgs e)
 		{
-			ReloadScene();
-			RedrawExceptSelected();
-
 			foreach (var i in Selected) {
-				var tempShape = (Shape)i.Clone();
-				Rotate(tempShape, Alpha.Value * PI / 180, Tetta.Value * PI / 180, Radius.Value);
-				DrawShape(tempShape, Pens.Blue);
+				RotateOnX(i, (Alpha.Value - OldAlpha) * PI / 180);
+				OldAlpha = Alpha.Value;
 			}
 
+			ReloadScene();
+			DrawExceptSelected();
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 		}
 
 		private void Tetta_Scroll(object sender, EventArgs e)
 		{
-			ReloadScene();
-			RedrawExceptSelected();
-
 			foreach (var i in Selected) {
-				var tempShape = (Shape)i.Clone();
-				Rotate(tempShape, Alpha.Value * PI / 180, Tetta.Value * PI / 180, Radius.Value);
-				DrawShape(tempShape, Pens.Blue);
+				RotateOnY(i, (Tetta.Value - OldTetta) * PI / 180);
+				OldTetta = Tetta.Value;
 			}
 
+			ReloadScene();
+			DrawExceptSelected();
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 		}
 
 		private void Radius_Scroll(object sender, EventArgs e)
 		{
 			ReloadScene();
-			RedrawExceptSelected();
+			DrawExceptSelected();
 
 			foreach (var i in Selected) {
 				var tempShape = (Shape)i.Clone();
-				Rotate(tempShape, Alpha.Value * PI / 180, Tetta.Value * PI / 180, Radius.Value);
+
+				MukhinRotate(
+					shape: tempShape,
+					alpha: Alpha.Value * PI / 180,
+					tetta: Tetta.Value * PI / 180,
+					radius: Radius.Value);
 				DrawShape(tempShape, Pens.Blue);
 			}
 
@@ -292,25 +312,63 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
-		void Rotate(Shape shape, double alpha, double tetta, double radius)
+		void MukhinRotate(Shape shape, double alpha, double tetta, double radius)
 		{
 			var matrix = new double[] {
-				Cos(alpha), Sin(alpha) * Sin(tetta),	0,	Sin(alpha) * Cos(tetta) / radius,
-				0,			Cos(tetta),					0,	-Sin(tetta)/radius,
-				Sin(alpha), -Cos(alpha) * Sin(tetta),	0,	-Cos(alpha) * Cos(tetta) / radius,
-				0,			0,							0,	1
+				Cos(alpha), Sin(alpha) * Sin(tetta),    0,  Sin(alpha) * Cos(tetta) / radius,
+				0,          Cos(tetta),                 0,  -Sin(tetta)/radius,
+				Sin(alpha), -Cos(alpha) * Sin(tetta),   0,  -Cos(alpha) * Cos(tetta) / radius,
+				0,          0,                          0,  1
+			};
+
+			Prepearing(shape);
+			shape?.Transform(matrix);
+			PostProcessing(shape);
+		}
+
+		void RotateOnX(Shape shape, double radians)
+		{
+			var matrix = new double[] {
+				1,	0,				0,				0,
+				0,	Cos(radians),	Sin(radians),	0,
+				0,	-Sin(radians),	Cos(radians),	0,
+				0,	0,				0,				1
 			};
 
 			shape?.Transform(matrix);
 		}
 
-		void RotateOnX(Shape shape, double angle)
+		void RotateOnY(Shape shape, double radians)
 		{
 			var matrix = new double[] {
-				1,	0,				0,  0,
-				0,	Cos(angle),		Sin(angle),  0,
-				0,	-Sin(angle),	Cos(angle),  0,
-				0,	0,				0,  1
+				Cos(radians),	0,	-Sin(radians),	0,
+				0,				1,	0,				0,
+				Sin(radians),	0,	Cos(radians),	0,
+				0,				0,	0,				1
+			};
+
+			shape?.Transform(matrix);
+		}
+
+		void RotateOnZ(Shape shape, double radians)
+		{
+			var matrix = new double[] {
+				Cos(radians),	Sin(radians),	0,	0,
+				-Sin(radians),	Cos(radians),	0,	0,
+				0,				0,				1,	0,
+				0,				0,				0,	1
+			};
+
+			shape?.Transform(matrix);
+		}
+
+		void ProjectOnXY(Shape shape, double radius)
+		{
+			var matrix = new double[] {
+				0,	0,	0,	0,
+				0,	0,	0,	0,
+				0,	0,	0,	-1 / radius,
+				0,	0,	0,	1
 			};
 
 			shape?.Transform(matrix);
@@ -335,8 +393,24 @@ namespace CG
 			return new Vertex(
 				x: Random.Next(-PictureBox.Width / 2 + 10, PictureBox.Width / 2 - 10),
 				y: Random.Next(-PictureBox.Height / 2 + 10, PictureBox.Height / 2 - 10),
-				z: 5,
+				z: 1,
 				uniformCoordinate: 1);
+		}
+
+		void Prepearing(Shape shape)
+		{
+			if (UseLocalPlane.Checked && shape != null) {
+				var gravityCenter = shape?.GetGravityCenter();
+				Transport(shape, -gravityCenter.X, -gravityCenter.Y, -gravityCenter.Z);
+			}
+		}
+
+		void PostProcessing(Shape shape)
+		{
+			if (UseLocalPlane.Checked && shape != null) {
+				var gravityCenter = shape?.GetGravityCenter();
+				Transport(shape, gravityCenter.X, gravityCenter.Y, gravityCenter.Z);
+			}
 		}
 
 		void DrawShape(Shape shape, Pen pen)
@@ -347,24 +421,24 @@ namespace CG
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
 
-			if (tempShape is SubVertex subvertex) {
+			if (tempShape is SubVertex subVertex) {
 				ToPoint(
-				shape: subvertex.Origin,
-				xFactor: PictureBox.Image.Width / 2,
-				yFactor: PictureBox.Image.Height / 2);
+					shape: subVertex.Origin,
+					xFactor: PictureBox.Image.Width / 2,
+					yFactor: PictureBox.Image.Height / 2);
 			}
 
 			tempShape.Draw(Graphics, pen);
 		}
 
-		void RedrawExceptSelected()
+		void DrawExceptSelected()
 		{
 			foreach (var i in Shapes.Except(Selected)) {
 				DrawShape(i, Pens.Black);
 			}
 		}
 
-		void RedrawSelected()
+		void DrawSelectedShapes()
 		{
 			foreach (var i in Selected) {
 				DrawShape(i, Pens.Blue);
@@ -397,8 +471,8 @@ namespace CG
 			}
 
 			ReloadScene();
-			RedrawExceptSelected();
-			RedrawSelected();
+			DrawExceptSelected();
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 		}
 
@@ -416,8 +490,8 @@ namespace CG
 				}
 
 				ReloadScene();
-				RedrawExceptSelected();
-				RedrawSelected();
+				DrawExceptSelected();
+				DrawSelectedShapes();
 				PictureBox.Refresh();
 			}
 		}
@@ -429,8 +503,8 @@ namespace CG
 			}
 
 			ReloadScene();
-			RedrawExceptSelected();
-			RedrawSelected();
+			DrawExceptSelected();
+			DrawSelectedShapes();
 			PictureBox.Refresh();
 		}
 

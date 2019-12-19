@@ -18,6 +18,8 @@ namespace CG
 
 		public abstract double GetDistance(Vertex vertex);
 
+		public abstract Vertex GetGravityCenter();
+
 		public abstract void Transform(double[] matrix);
 
 		public static void Transform(Vertex[] vertices, double[] matrix)
@@ -75,7 +77,7 @@ namespace CG
 
 		public override void Draw(Graphics graphics, Pen pen)
 		{
-			graphics.DrawEllipse(pen, (int)X - 2, (int)Y - 2, 4, 4);
+			graphics.DrawEllipse(pen, (int)X - 1, (int)Y - 1, 2, 2);
 		}
 
 		public override bool Equals(object obj)
@@ -94,6 +96,11 @@ namespace CG
 		public override double GetDistance(Vertex vertex)
 		{
 			return Sqrt(Pow(vertex.Y - Y, 2) + Pow(vertex.X - X, 2));
+		}
+
+		public override Vertex GetGravityCenter()
+		{
+			return (Vertex)Clone();
 		}
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
@@ -150,6 +157,11 @@ namespace CG
 			return Vertex.GetDistance(vertex);
 		}
 
+		public override Vertex GetGravityCenter()
+		{
+			return Origin.GetGravityCenter();
+		}
+
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
 			return Vertex.GetIntersection(vertex, epsilon);
@@ -200,6 +212,15 @@ namespace CG
 		public override double GetDistance(Vertex vertex)
 		{
 			return GetSpace(vertex) * 2 / A.GetDistance(B.Vertex);
+		}
+
+		public override Vertex GetGravityCenter()
+		{
+			return new Vertex(
+				x: (A.Vertex.X + B.Vertex.X) / 2,
+				y: (A.Vertex.Y + B.Vertex.Y) / 2,
+				z: (A.Vertex.Z + B.Vertex.Z) / 2,
+				uniformCoordinate: 1);
 		}
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
@@ -271,6 +292,15 @@ namespace CG
 				OZ.GetDistance(vertex));
 		}
 
+		public override Vertex GetGravityCenter()
+		{
+			return new Vertex(
+				x: (OX.GetGravityCenter().X + OY.GetGravityCenter().X + OZ.GetGravityCenter().Z) / 3,
+				y: (OX.GetGravityCenter().Y + OY.GetGravityCenter().Y + OZ.GetGravityCenter().Y) / 3,
+				z: (OX.GetGravityCenter().Z + OY.GetGravityCenter().Z + OZ.GetGravityCenter().Z) / 3,
+				uniformCoordinate: 1);
+		}
+
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
 			if (OX.GetIntersection(vertex, epsilon) is Shape ox) {
@@ -317,6 +347,26 @@ namespace CG
 		public override double GetDistance(Vertex vertex)
 		{
 			return Shapes.Min(x => x.GetDistance(vertex));
+		}
+
+		public override Vertex GetGravityCenter()
+		{
+			var currentX = 0d;
+			var currentY = 0d;
+			var currentZ = 0d;
+
+			foreach (var i in Shapes) {
+				var gravityCenter = i.GetGravityCenter();
+				currentX += gravityCenter.X;
+				currentY += gravityCenter.Y;
+				currentZ += gravityCenter.Z;
+			}
+
+			return new Vertex(
+				x: currentX / Shapes.Count,
+				y: currentY / Shapes.Count,
+				z: currentZ / Shapes.Count,
+				uniformCoordinate: 1);
 		}
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
