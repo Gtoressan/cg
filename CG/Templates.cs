@@ -127,6 +127,38 @@ namespace CG
 		{
 			Transform(new Vertex[] { this }, matrix);
 		}
+
+		public static Vertex operator +(Vertex a, Vertex b)
+		{
+			return new Vertex(
+				x: a.X + b.X,
+				y: a.Y + b.Y,
+				z: a.Z + b.Z,
+				uniformCoordinate: 1);
+		}
+
+		public static Vertex operator -(Vertex a, Vertex b)
+		{
+			return new Vertex(
+				x: a.X - b.X,
+				y: a.Y - b.Y,
+				z: a.Z - b.Z,
+				uniformCoordinate: 1);
+		}
+
+		public static double operator *(Vertex a, Vertex b)
+		{
+			return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+		}
+
+		public static Vertex operator *(Vertex a, double b)
+		{
+			return new Vertex(
+				x: a.X * b,
+				y: a.Y * b,
+				z: a.Z * b,
+				uniformCoordinate: 1);
+		}
 	}
 
 	[Serializable]
