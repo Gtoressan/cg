@@ -589,6 +589,13 @@ namespace CG
 					Selected.Add(nearest);
 				}
 
+				foreach (var i in Selected) {
+					if (i is SubVertex subVertex) {
+						Selected.Remove(subVertex);
+						Selected.Add(subVertex.Origin);
+					}
+				}
+
 				ReloadScene();
 				DrawExceptSelected();
 				DrawSelectedShapes();
