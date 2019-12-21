@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 using static System.Math;
 
 namespace CG
@@ -16,7 +15,7 @@ namespace CG
 
 		Graphics Graphics;
 		Random Random = new Random();
-		List<Shape> Shapes = new List<Shape>();
+		public List<Shape> Shapes = new List<Shape>();
 		List<Shape> Selected = new List<Shape>();
 		Vertex OldVertex = new Vertex(0, 0, 0, 1);
 		Boolean IsMousePressed = false;
@@ -52,7 +51,7 @@ namespace CG
 
 		private void EditSelected_Click(object sender, EventArgs e)
 		{
-			if (new ShapeEditor(Selected).ShowDialog() == DialogResult.OK) {
+			if (new ShapeEditor(Selected) { Owner = this }.ShowDialog() == DialogResult.OK) {
 				ReloadScene();
 				DrawExceptSelected();
 				DrawSelectedShapes();
@@ -163,7 +162,7 @@ namespace CG
 
 		private void GroupSelected_Click(object sender, EventArgs e)
 		{
-			if (Selected.Count < 2) {
+			if (Selected.Count < 1) {
 				return;
 			}
 
@@ -268,6 +267,31 @@ namespace CG
 		private void Bisector_Click(object sender, EventArgs e)
 		{
 			SpecialActionIndex = 2;
+		}
+
+		private void Morphing_Scroll(object sender, EventArgs e)
+		{
+			if (Selected.Count == 2 &&
+				Selected[0] is Cut cut1 &&
+				Selected[1] is Cut cut2) {
+
+				Shapes.Add(new Cut(
+					a: new Vertex(
+						x: cut1.A.Vertex.X * (1 - Morphing.Value / 10) + cut2.A.Vertex.X * Morphing.Value / 10,
+						y: cut1.A.Vertex.Y * (1 - Morphing.Value / 10) + cut2.A.Vertex.Y * Morphing.Value / 10,
+						z: cut1.A.Vertex.Z * (1 - Morphing.Value / 10) + cut2.A.Vertex.Z * Morphing.Value / 10,
+						uniformCoordinate: 1),
+					b: new Vertex(
+						x: cut1.B.Vertex.X * (1 - Morphing.Value / 10) + cut2.B.Vertex.X * Morphing.Value / 10,
+						y: cut1.B.Vertex.Y * (1 - Morphing.Value / 10) + cut2.B.Vertex.Y * Morphing.Value / 10,
+						z: cut1.B.Vertex.Z * (1 - Morphing.Value / 10) + cut2.B.Vertex.Z * Morphing.Value / 10,
+						uniformCoordinate: 1)));
+			}
+
+			ReloadScene();
+			DrawExceptSelected();
+			DrawSelectedShapes();
+			PictureBox.Refresh();
 		}
 
 		#endregion
