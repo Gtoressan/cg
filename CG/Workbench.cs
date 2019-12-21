@@ -62,7 +62,11 @@ namespace CG
 		private void RemoveSelected_Click(object sender, EventArgs e)
 		{
 			foreach (var i in Selected) {
-				Shapes.Remove(i);
+				if (i is SubVertex subVertex) {
+					Shapes.Remove(subVertex.Origin);
+				} else {
+					Shapes.Remove(i);
+				}
 			}
 
 			Selected.Clear();
