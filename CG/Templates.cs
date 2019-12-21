@@ -9,7 +9,7 @@ using static System.Math;
 namespace CG
 {
 	[Serializable]
-	abstract class Shape : ICloneable
+	public abstract class Shape : ICloneable
 	{
 		public abstract object Clone();
 
@@ -64,7 +64,7 @@ namespace CG
 
 	[Serializable]
 
-	class Vertex : Shape
+	public class Vertex : Shape
 	{
 		public double X;
 		public double Y;
@@ -131,7 +131,7 @@ namespace CG
 
 	[Serializable]
 
-	class SubVertex : Shape
+	public class SubVertex : Shape
 	{
 		public Shape Origin;
 		public Vertex Vertex;
@@ -188,7 +188,7 @@ namespace CG
 
 	[Serializable]
 
-	class Cut : Shape
+	public class Cut : Shape
 	{
 		public SubVertex A;
 		public SubVertex B;
@@ -263,13 +263,13 @@ namespace CG
 
 		public override string ToString()
 		{
-			return $"x - ({A.Vertex.X}) / {(B.Vertex.X - A.Vertex.X)} = y - ({A.Vertex.Y}) / {(B.Vertex.Y - A.Vertex.Y)} = z - ({A.Vertex.Z}) / {(B.Vertex.Z - A.Vertex.Z)}";
+			return $"{A.Vertex.Y - B.Vertex.Y}, {B.Vertex.X - A.Vertex.X}, {A.Vertex.X * B.Vertex.Y - B.Vertex.X * A.Vertex.Y}";
 		}
 	}
 
 	[Serializable]
 
-	class Plane : Shape
+	public class Plane : Shape
 	{
 		public Cut OX;
 		public Cut OY;
@@ -339,7 +339,7 @@ namespace CG
 
 	[Serializable]
 
-	class Group : Shape
+	public class Group : Shape
 	{
 		public List<Shape> Shapes = new List<Shape>();
 
@@ -399,7 +399,10 @@ namespace CG
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
 			foreach (var i in Shapes) {
-				if (i.GetIntersection(vertex, epsilon) != null) {
+				if (i.GetIntersection(vertex, epsilon) is Shape shape) {
+					if (shape is SubVertex subVertex) {
+						return subVertex;
+					}
 					return this;
 				}
 			}

@@ -52,11 +52,13 @@
 			this.Height = new System.Windows.Forms.Button();
 			this.Bisector = new System.Windows.Forms.Button();
 			this.SelectAll = new System.Windows.Forms.Button();
+			this.Morphing = new System.Windows.Forms.TrackBar();
 			((System.ComponentModel.ISupportInitialize)(this.Alpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Radius)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Zetta)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.Morphing)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// AddRandomCut
@@ -236,7 +238,7 @@
 			this.PictureBox.BackColor = System.Drawing.Color.White;
 			this.PictureBox.Location = new System.Drawing.Point(12, 12);
 			this.PictureBox.Name = "PictureBox";
-			this.PictureBox.Size = new System.Drawing.Size(614, 511);
+			this.PictureBox.Size = new System.Drawing.Size(614, 483);
 			this.PictureBox.TabIndex = 15;
 			this.PictureBox.TabStop = false;
 			this.PictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBox_MouseDown);
@@ -248,10 +250,10 @@
 			// 
 			this.StatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.StatusBar.Location = new System.Drawing.Point(12, 529);
+			this.StatusBar.Location = new System.Drawing.Point(12, 504);
 			this.StatusBar.Name = "StatusBar";
 			this.StatusBar.ReadOnly = true;
-			this.StatusBar.Size = new System.Drawing.Size(614, 20);
+			this.StatusBar.Size = new System.Drawing.Size(468, 45);
 			this.StatusBar.TabIndex = 16;
 			this.StatusBar.Text = "";
 			// 
@@ -342,11 +344,22 @@
 			this.SelectAll.UseVisualStyleBackColor = true;
 			this.SelectAll.Click += new System.EventHandler(this.SelectAll_Click);
 			// 
+			// Morphing
+			// 
+			this.Morphing.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Morphing.Location = new System.Drawing.Point(486, 504);
+			this.Morphing.Name = "Morphing";
+			this.Morphing.Size = new System.Drawing.Size(140, 45);
+			this.Morphing.TabIndex = 27;
+			this.Morphing.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.Morphing.Scroll += new System.EventHandler(this.Morphing_Scroll);
+			// 
 			// Workbench
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 561);
+			this.Controls.Add(this.Morphing);
 			this.Controls.Add(this.SelectAll);
 			this.Controls.Add(this.Bisector);
 			this.Controls.Add(this.Height);
@@ -381,6 +394,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.PictureBox)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Zetta)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.Morphing)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -413,5 +427,6 @@
 		private System.Windows.Forms.Button Height;
 		private System.Windows.Forms.Button Bisector;
 		private System.Windows.Forms.Button SelectAll;
+		private System.Windows.Forms.TrackBar Morphing;
 	}
 }
