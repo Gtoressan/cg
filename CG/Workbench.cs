@@ -25,6 +25,7 @@ namespace CG
 		Double TouchEpsilon = 7;
 
 		public Int32 SpecialActionIndex = -1;
+		public Vertex ScreenVertex = new Vertex(3, 0, 0, 1);
 
 		#endregion
 
@@ -292,6 +293,11 @@ namespace CG
 			DrawExceptSelected();
 			DrawSelectedShapes();
 			PictureBox.Refresh();
+		}
+
+		private void Shadow_Click(object sender, EventArgs e)
+		{
+			SpecialActionIndex = 3;
 		}
 
 		#endregion
@@ -680,6 +686,28 @@ namespace CG
 						var z2 = (float)(rightMove * maxLeft.Z + leftMove * maxRight.Z);
 
 						Shapes.Add(new Cut(new Vertex(x1, y1, z1, 1), new Vertex(x2, y2, z2, 1)));
+					}
+					break;
+				}
+
+				// Отрисовать тени.
+				case 3: {
+					if (Selected.Count == 1 &&
+						Selected.FirstOrDefault() is Group group) {
+						var shadow = new Group();
+						var anchorPoint = new Vertex(
+							x: ScreenVertex.X != 0 ? Random.NextDouble() : 0,
+							y: ScreenVertex.Y != 0 ? Random.NextDouble() : 0,
+							z: ScreenVertex.Z != 0 ? Random.NextDouble() : 0,
+							uniformCoordinate: 1);
+
+						foreach (Cut i in group.Shapes) {
+							shadow.Shapes.Add(new Cut(
+								a: OldVertex + (i.A.Vertex - OldVertex) * (ScreenVertex * (anchorPoint - OldVertex) / (ScreenVertex * (i.A.Vertex - OldVertex))),
+								b: OldVertex + (i.B.Vertex - OldVertex) * (ScreenVertex * (anchorPoint - OldVertex) / (ScreenVertex * (i.B.Vertex - OldVertex)))));
+						}
+
+						Shapes.Add(shadow);
 					}
 					break;
 				}
