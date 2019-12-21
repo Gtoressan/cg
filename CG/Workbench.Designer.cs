@@ -53,6 +53,7 @@
 			this.Bisector = new System.Windows.Forms.Button();
 			this.SelectAll = new System.Windows.Forms.Button();
 			this.Morphing = new System.Windows.Forms.TrackBar();
+			this.Shadow = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.Alpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Radius)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Tetta)).BeginInit();
@@ -338,7 +339,7 @@
 			this.SelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SelectAll.Location = new System.Drawing.Point(632, 529);
 			this.SelectAll.Name = "SelectAll";
-			this.SelectAll.Size = new System.Drawing.Size(140, 22);
+			this.SelectAll.Size = new System.Drawing.Size(91, 22);
 			this.SelectAll.TabIndex = 26;
 			this.SelectAll.Text = "Select all";
 			this.SelectAll.UseVisualStyleBackColor = true;
@@ -354,11 +355,23 @@
 			this.Morphing.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.Morphing.Scroll += new System.EventHandler(this.Morphing_Scroll);
 			// 
+			// Shadow
+			// 
+			this.Shadow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Shadow.Location = new System.Drawing.Point(729, 529);
+			this.Shadow.Name = "Shadow";
+			this.Shadow.Size = new System.Drawing.Size(43, 22);
+			this.Shadow.TabIndex = 28;
+			this.Shadow.Text = "Shadow";
+			this.Shadow.UseVisualStyleBackColor = true;
+			this.Shadow.Click += new System.EventHandler(this.Shadow_Click);
+			// 
 			// Workbench
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 561);
+			this.Controls.Add(this.Shadow);
 			this.Controls.Add(this.Morphing);
 			this.Controls.Add(this.SelectAll);
 			this.Controls.Add(this.Bisector);
@@ -428,5 +441,6 @@
 		private System.Windows.Forms.Button Bisector;
 		private System.Windows.Forms.Button SelectAll;
 		private System.Windows.Forms.TrackBar Morphing;
+		private System.Windows.Forms.Button Shadow;
 	}
 }
