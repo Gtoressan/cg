@@ -163,7 +163,7 @@ namespace CG
 
 		private void GroupSelected_Click(object sender, EventArgs e)
 		{
-			if (Selected.Count < 1) {
+			if (Selected.Count < 2) {
 				return;
 			}
 
@@ -276,17 +276,31 @@ namespace CG
 				Selected[0] is Cut cut1 &&
 				Selected[1] is Cut cut2) {
 
-				Shapes.Add(new Cut(
-					a: new Vertex(
-						x: cut1.A.Vertex.X * (1 - Morphing.Value / 10) + cut2.A.Vertex.X * Morphing.Value / 10,
-						y: cut1.A.Vertex.Y * (1 - Morphing.Value / 10) + cut2.A.Vertex.Y * Morphing.Value / 10,
-						z: cut1.A.Vertex.Z * (1 - Morphing.Value / 10) + cut2.A.Vertex.Z * Morphing.Value / 10,
-						uniformCoordinate: 1),
-					b: new Vertex(
-						x: cut1.B.Vertex.X * (1 - Morphing.Value / 10) + cut2.B.Vertex.X * Morphing.Value / 10,
-						y: cut1.B.Vertex.Y * (1 - Morphing.Value / 10) + cut2.B.Vertex.Y * Morphing.Value / 10,
-						z: cut1.B.Vertex.Z * (1 - Morphing.Value / 10) + cut2.B.Vertex.Z * Morphing.Value / 10,
-						uniformCoordinate: 1)));
+				Shapes.Add(MorphCuts(cut1, cut2));
+			} else if (Selected.Count == 2 &&
+				Selected[0] is Group group1 &&
+				Selected[1] is Group group2) {
+				group1 = (Group)group1.Clone();
+				group2 = (Group)group2.Clone();
+
+				var maxCount = Max(group1.Shapes.Count, group2.Shapes.Count);
+				var morphing = new Group();
+
+				if (group1.Shapes.Count < maxCount) {
+					FillWithDivision(group1, maxCount);
+				}
+				if (group2.Shapes.Count < maxCount) {
+					FillWithDivision(group2, maxCount);
+				}
+
+				for (int i = 0; i < maxCount; ++i) {
+					if (group1.Shapes[i] is Cut cut3 &&
+						group2.Shapes[i] is Cut cut4) {
+						morphing.Shapes.Add(MorphCuts(cut3, cut4));
+					}
+				}
+
+				Shapes.Add(morphing);
 			}
 
 			ReloadScene();
@@ -603,6 +617,39 @@ namespace CG
 				"";
 		}
 
+		void FillWithDivision(Group group, int count)
+		{
+			var i = 0;
+
+			while (group.Shapes.Count < count) {
+				if (group.Shapes[i] is Cut cut) {
+					var gravityCenter = cut.GetGravityCenter();
+
+					group.Shapes.Remove(cut);
+					group.Shapes.Add(new Cut((Vertex)cut.A.Vertex.Clone(), gravityCenter));
+					group.Shapes.Add(new Cut((Vertex)gravityCenter.Clone(), (Vertex)cut.B.Vertex.Clone()));
+					++i;
+				} else {
+					break;
+				}
+			}
+		}
+
+		Cut MorphCuts(Cut a, Cut b)
+		{
+			return new Cut(
+					a: new Vertex(
+						x: a.A.Vertex.X * (1 - (double)Morphing.Value / 10) + b.A.Vertex.X * Morphing.Value / 10,
+						y: a.A.Vertex.Y * (1 - (double)Morphing.Value / 10) + b.A.Vertex.Y * Morphing.Value / 10,
+						z: a.A.Vertex.Z * (1 - (double)Morphing.Value / 10) + b.A.Vertex.Z * Morphing.Value / 10,
+						uniformCoordinate: 1),
+					b: new Vertex(
+						x: a.B.Vertex.X * (1 - (double)Morphing.Value / 10) + b.B.Vertex.X * Morphing.Value / 10,
+						y: a.B.Vertex.Y * (1 - (double)Morphing.Value / 10) + b.B.Vertex.Y * Morphing.Value / 10,
+						z: a.B.Vertex.Z * (1 - (double)Morphing.Value / 10) + b.B.Vertex.Z * Morphing.Value / 10,
+						uniformCoordinate: 1));
+		}
+
 		void ProcessSpecialAction(Vertex vertex)
 		{
 			switch (SpecialActionIndex) {
@@ -661,7 +708,7 @@ namespace CG
 
 						var x1 = (b1 * c2 - b2 * c1) / (a1 * b2 - a2 * b1);
 						var y1 = (c1 * a2 - c2 * a1) / (a1 * b2 - a2 * b1);
-						var z1 = 0d;
+						double z1;
 
 						if (Abs(b1) > 0.00001) {
 							z1 = (A1.Z + (B1.Z - A1.Z) * (x1 - A1.X) / b1);
