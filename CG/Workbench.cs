@@ -13,19 +13,19 @@ namespace CG
 	{
 		#region Fields and properties
 
-		Graphics Graphics;
-		Random Random = new Random();
-		public List<Shape> Shapes = new List<Shape>();
-		List<Shape> Selected = new List<Shape>();
-		Vertex OldVertex = new Vertex(0, 0, 0, 1);
-		Boolean IsMousePressed = false;
-		Int32 OldAlpha = 0;
-		Int32 OldTetta = 0;
-		Int32 OldZetta = 0;
-		Double TouchEpsilon = 7;
+		private Graphics Graphics;
+		private Random Random = new Random();
+		private List<Shape> Selected = new List<Shape>();
+		private Vertex OldVertex = new Vertex(0, 0, 0, 1);
+		private Boolean IsMousePressed = false;
+		private Int32 OldAlpha = 0;
+		private Int32 OldTetta = 0;
+		private Int32 OldZetta = 0;
+		private Double TouchEpsilon = 7;
 
 		public Int32 SpecialActionIndex = -1;
 		public Vertex ScreenVertex = new Vertex(3, 0, 0, 1);
+		public List<Shape> Shapes = new List<Shape>();
 
 		#endregion
 
@@ -52,7 +52,8 @@ namespace CG
 
 		private void EditSelected_Click(object sender, EventArgs e)
 		{
-			if (new ShapeEditor(Selected) { Owner = this }.ShowDialog() == DialogResult.OK) {
+			if (new ShapeEditor(Selected) { Owner = this }.ShowDialog() == DialogResult.OK)
+			{
 				ReloadScene();
 				DrawExceptSelected();
 				DrawSelectedShapes();
@@ -61,10 +62,14 @@ namespace CG
 
 		private void RemoveSelected_Click(object sender, EventArgs e)
 		{
-			foreach (var i in Selected) {
-				if (i is SubVertex subVertex) {
+			foreach (var i in Selected)
+			{
+				if (i is SubVertex subVertex)
+				{
 					Shapes.Remove(subVertex.Origin);
-				} else {
+				}
+				else
+				{
 					Shapes.Remove(i);
 				}
 			}
@@ -96,9 +101,12 @@ namespace CG
 
 		private void ExportScene_Click(object sender, EventArgs e)
 		{
-			using (var fileDialog = new SaveFileDialog()) {
-				if (fileDialog.ShowDialog() == DialogResult.OK) {
-					using (var stream = new FileStream(fileDialog.FileName, FileMode.OpenOrCreate)) {
+			using (var fileDialog = new SaveFileDialog())
+			{
+				if (fileDialog.ShowDialog() == DialogResult.OK)
+				{
+					using (var stream = new FileStream(fileDialog.FileName, FileMode.OpenOrCreate))
+					{
 						new BinaryFormatter().Serialize(stream, Shapes);
 					}
 				}
@@ -107,9 +115,12 @@ namespace CG
 
 		private void ImportScene_Click(object sender, EventArgs e)
 		{
-			using (var fileDialog = new OpenFileDialog()) {
-				if (fileDialog.ShowDialog() == DialogResult.OK) {
-					using (var stream = new FileStream(fileDialog.FileName, FileMode.Open)) {
+			using (var fileDialog = new OpenFileDialog())
+			{
+				if (fileDialog.ShowDialog() == DialogResult.OK)
+				{
+					using (var stream = new FileStream(fileDialog.FileName, FileMode.Open))
+					{
 						Shapes = (List<Shape>)new BinaryFormatter().Deserialize(stream);
 						Selected.Clear();
 					}
@@ -143,7 +154,8 @@ namespace CG
 
 		private void ToggleLocalPlane_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (Selected.Count == 0) {
+			if (Selected.Count == 0)
+			{
 				return;
 			}
 
@@ -167,13 +179,15 @@ namespace CG
 
 		private void GroupSelected_Click(object sender, EventArgs e)
 		{
-			if (Selected.Count < 2) {
+			if (Selected.Count < 2)
+			{
 				return;
 			}
 
 			var group = new Group();
 
-			foreach (var i in Selected) {
+			foreach (var i in Selected)
+			{
 				group.Shapes.Add(i);
 				Shapes.Remove(i);
 			}
@@ -186,9 +200,12 @@ namespace CG
 
 		private void UngroupSelected_Click(object sender, EventArgs e)
 		{
-			foreach (var i in Selected) {
-				if (i is Group group) {
-					foreach (var j in group.Shapes) {
+			foreach (var i in Selected)
+			{
+				if (i is Group group)
+				{
+					foreach (var j in group.Shapes)
+					{
 						Shapes.Add(j);
 					}
 
@@ -205,7 +222,8 @@ namespace CG
 
 		private void Alpha_Scroll(object sender, EventArgs e)
 		{
-			foreach (var i in Selected) {
+			foreach (var i in Selected)
+			{
 				var gravityCenter = i.GetGravityCenter();
 				PreProcessor(i, gravityCenter);
 				RotateOnX(i, (Alpha.Value - OldAlpha) * PI / 180);
@@ -221,7 +239,8 @@ namespace CG
 
 		private void Tetta_Scroll(object sender, EventArgs e)
 		{
-			foreach (var i in Selected) {
+			foreach (var i in Selected)
+			{
 				var gravityCenter = i.GetGravityCenter();
 				PreProcessor(i, gravityCenter);
 				RotateOnY(i, (Tetta.Value - OldTetta) * PI / 180);
@@ -237,7 +256,8 @@ namespace CG
 
 		private void Zetta_Scroll(object sender, EventArgs e)
 		{
-			foreach (var i in Selected) {
+			foreach (var i in Selected)
+			{
 				var gravityCenter = i.GetGravityCenter();
 				PreProcessor(i, gravityCenter);
 				RotateOnZ(i, (Zetta.Value - OldZetta) * PI / 180);
@@ -278,28 +298,35 @@ namespace CG
 		{
 			if (Selected.Count == 2 &&
 				Selected[0] is Cut cut1 &&
-				Selected[1] is Cut cut2) {
+				Selected[1] is Cut cut2)
+			{
 
 				Shapes.Add(MorphCuts(cut1, cut2));
-			} else if (Selected.Count == 2 &&
-				Selected[0] is Group group1 &&
-				Selected[1] is Group group2) {
+			}
+			else if (Selected.Count == 2 &&
+			  Selected[0] is Group group1 &&
+			  Selected[1] is Group group2)
+			{
 				group1 = (Group)group1.Clone();
 				group2 = (Group)group2.Clone();
 
 				var maxCount = Max(group1.Shapes.Count, group2.Shapes.Count);
 				var morphing = new Group();
 
-				if (group1.Shapes.Count < maxCount) {
+				if (group1.Shapes.Count < maxCount)
+				{
 					FillWithDivision(group1, maxCount);
 				}
-				if (group2.Shapes.Count < maxCount) {
+				if (group2.Shapes.Count < maxCount)
+				{
 					FillWithDivision(group2, maxCount);
 				}
 
-				for (int i = 0; i < maxCount; ++i) {
+				for (int i = 0; i < maxCount; ++i)
+				{
 					if (group1.Shapes[i] is Cut cut3 &&
-						group2.Shapes[i] is Cut cut4) {
+						group2.Shapes[i] is Cut cut4)
+					{
 						morphing.Shapes.Add(MorphCuts(cut3, cut4));
 					}
 				}
@@ -331,13 +358,16 @@ namespace CG
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
 
-			switch (ModifierKeys) {
-				default: {
+			switch (ModifierKeys)
+			{
+				default:
+				{
 					SelectShape(OldVertex);
 					break;
 				}
 
-				case Keys.Control: {
+				case Keys.Control:
+				{
 					SelectManyShapes(OldVertex);
 					break;
 				}
@@ -360,7 +390,8 @@ namespace CG
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
 
-			if (IsMousePressed) {
+			if (IsMousePressed)
+			{
 
 				var offsetX = currentVertex.X - OldVertex.X;
 				var offsetY = currentVertex.Y - OldVertex.Y;
@@ -384,7 +415,7 @@ namespace CG
 
 		#region Matrix transformations.
 
-		void ToPoint(Shape shape, double xFactor, double yFactor)
+		private void ToPoint(Shape shape, double xFactor, double yFactor)
 		{
 			var matrix = new double[] {
 				1,          0,          0,  0,
@@ -396,7 +427,7 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
-		void ToVertex(Shape shape, double xFactor, double yFactor)
+		private void ToVertex(Shape shape, double xFactor, double yFactor)
 		{
 			var matrix = new double[] {
 				1,          0,          0,  0,
@@ -408,7 +439,7 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
-		void Transport(Shape shape, double offsetX, double offsetY, double offsetZ)
+		private void Transport(Shape shape, double offsetX, double offsetY, double offsetZ)
 		{
 			var matrix = new double[] {
 				1,          0,          0,          0,
@@ -420,7 +451,7 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
-		void MukhinRotate(Shape shape, double alpha, double tetta, double radius)
+		private void MukhinRotate(Shape shape, double alpha, double tetta, double radius)
 		{
 			var matrix = new double[] {
 				Cos(alpha), Sin(alpha) * Sin(tetta),    0,  Sin(alpha) * Cos(tetta) / radius,
@@ -430,7 +461,7 @@ namespace CG
 			};
 		}
 
-		void RotateOnX(Shape shape, double radians)
+		private void RotateOnX(Shape shape, double radians)
 		{
 			var matrix = new double[] {
 				1,  0,              0,              0,
@@ -442,7 +473,7 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
-		void RotateOnY(Shape shape, double radians)
+		private void RotateOnY(Shape shape, double radians)
 		{
 			var matrix = new double[] {
 				Cos(radians),   0,  -Sin(radians),  0,
@@ -454,7 +485,7 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
-		void RotateOnZ(Shape shape, double radians)
+		private void RotateOnZ(Shape shape, double radians)
 		{
 			var matrix = new double[] {
 				Cos(radians),   Sin(radians),   0,  0,
@@ -466,7 +497,7 @@ namespace CG
 			shape?.Transform(matrix);
 		}
 
-		void ProjectOnXY(Shape shape, double radius)
+		private void ProjectOnXY(Shape shape, double radius)
 		{
 			var matrix = new double[] {
 				1,  0,  0,  0,
@@ -480,7 +511,7 @@ namespace CG
 
 		#endregion
 
-		void ReloadScene()
+		private void ReloadScene()
 		{
 			PictureBox.Image?.Dispose();
 			Graphics?.Dispose();
@@ -492,7 +523,7 @@ namespace CG
 				PictureBox.Image);
 		}
 
-		Vertex GetRandomVertex()
+		private Vertex GetRandomVertex()
 		{
 			return new Vertex(
 				x: Random.Next(-PictureBox.Width / 2 + 10, PictureBox.Width / 2 - 10),
@@ -501,21 +532,23 @@ namespace CG
 				uniformCoordinate: 1);
 		}
 
-		void PreProcessor(Shape shape, Vertex gravityCenter)
+		private void PreProcessor(Shape shape, Vertex gravityCenter)
 		{
-			if (UseLocalPlane.Checked && shape != null) {
+			if (UseLocalPlane.Checked && shape != null)
+			{
 				Transport(shape, -gravityCenter.X, -gravityCenter.Y, -gravityCenter.Z);
 			}
 		}
 
-		void PostProcessor(Shape shape, Vertex gravityCenter)
+		private void PostProcessor(Shape shape, Vertex gravityCenter)
 		{
-			if (UseLocalPlane.Checked && shape != null) {
+			if (UseLocalPlane.Checked && shape != null)
+			{
 				Transport(shape, gravityCenter.X, gravityCenter.Y, gravityCenter.Z);
 			}
 		}
 
-		void DrawShape(Shape shape, Pen pen)
+		private void DrawShape(Shape shape, Pen pen)
 		{
 			var tempShape = (Shape)shape.Clone();
 			ProjectOnXY(tempShape, Radius.Value);
@@ -524,7 +557,8 @@ namespace CG
 				xFactor: PictureBox.Image.Width / 2,
 				yFactor: PictureBox.Image.Height / 2);
 
-			if (tempShape is SubVertex subVertex) {
+			if (tempShape is SubVertex subVertex)
+			{
 				ProjectOnXY(subVertex.Origin, Radius.Value);
 				ToPoint(
 					shape: subVertex.Origin,
@@ -535,29 +569,33 @@ namespace CG
 			tempShape.Draw(Graphics, pen);
 		}
 
-		void DrawExceptSelected()
+		private void DrawExceptSelected()
 		{
-			foreach (var i in Shapes.Except(Selected)) {
+			foreach (var i in Shapes.Except(Selected))
+			{
 				DrawShape(i, Pens.Black);
 			}
 		}
 
-		void DrawSelectedShapes()
+		private void DrawSelectedShapes()
 		{
-			foreach (var i in Selected) {
+			foreach (var i in Selected)
+			{
 				DrawShape(i, Pens.Blue);
 			}
 		}
 
-		Shape GetNearestShape(Vertex vertex)
+		private Shape GetNearestShape(Vertex vertex)
 		{
 			var minDistance = double.PositiveInfinity;
 			Shape nearest = null;
 
-			foreach (var i in Shapes) {
+			foreach (var i in Shapes)
+			{
 				var distance = i.GetDistance(vertex);
 
-				if (minDistance > distance) {
+				if (minDistance > distance)
+				{
 					minDistance = distance;
 					nearest = i.GetIntersection(vertex, TouchEpsilon);
 				}
@@ -566,11 +604,12 @@ namespace CG
 			return nearest;
 		}
 
-		void SelectShape(Vertex vertex)
+		private void SelectShape(Vertex vertex)
 		{
 			Selected.Clear();
 
-			if (GetNearestShape(vertex) is Shape nearest) {
+			if (GetNearestShape(vertex) is Shape nearest)
+			{
 				Selected.Add(nearest);
 			}
 
@@ -580,21 +619,28 @@ namespace CG
 			PictureBox.Refresh();
 		}
 
-		void SelectManyShapes(Vertex vertex)
+		private void SelectManyShapes(Vertex vertex)
 		{
-			if (GetNearestShape(vertex) is Shape nearest) {
-				if (nearest is SubVertex subvertex) {
+			if (GetNearestShape(vertex) is Shape nearest)
+			{
+				if (nearest is SubVertex subvertex)
+				{
 					nearest = subvertex.Origin;
 				}
 
-				if (Selected.Contains(nearest)) {
+				if (Selected.Contains(nearest))
+				{
 					Selected.Remove(nearest);
-				} else {
+				}
+				else
+				{
 					Selected.Add(nearest);
 				}
 
-				foreach (var i in Selected) {
-					if (i is SubVertex subVertex) {
+				foreach (var i in Selected)
+				{
+					if (i is SubVertex subVertex)
+					{
 						Selected.Remove(subVertex);
 						Selected.Add(subVertex.Origin);
 					}
@@ -607,9 +653,10 @@ namespace CG
 			}
 		}
 
-		void MoveSelected(double offsetX, double offsetY, double offsetZ)
+		private void MoveSelected(double offsetX, double offsetY, double offsetZ)
 		{
-			foreach (var i in Selected) {
+			foreach (var i in Selected)
+			{
 				Transport(i, offsetX, offsetY, offsetZ);
 			}
 
@@ -619,7 +666,7 @@ namespace CG
 			PictureBox.Refresh();
 		}
 
-		void FillStatusBar()
+		private void FillStatusBar()
 		{
 			StatusBar.Text =
 				$"Shapes: {Shapes.Count}, " +
@@ -628,25 +675,29 @@ namespace CG
 				"";
 		}
 
-		void FillWithDivision(Group group, int count)
+		private void FillWithDivision(Group group, int count)
 		{
 			var i = 0;
 
-			while (group.Shapes.Count < count) {
-				if (group.Shapes[i] is Cut cut) {
+			while (group.Shapes.Count < count)
+			{
+				if (group.Shapes[i] is Cut cut)
+				{
 					var gravityCenter = cut.GetGravityCenter();
 
 					group.Shapes.Remove(cut);
 					group.Shapes.Add(new Cut((Vertex)cut.A.Vertex.Clone(), gravityCenter));
 					group.Shapes.Add(new Cut((Vertex)gravityCenter.Clone(), (Vertex)cut.B.Vertex.Clone()));
 					++i;
-				} else {
+				}
+				else
+				{
 					break;
 				}
 			}
 		}
 
-		Cut MorphCuts(Cut a, Cut b)
+		private Cut MorphCuts(Cut a, Cut b)
 		{
 			return new Cut(
 					a: new Vertex(
@@ -661,24 +712,30 @@ namespace CG
 						uniformCoordinate: 1));
 		}
 
-		void ProcessSpecialAction(Vertex vertex)
+		private void ProcessSpecialAction(Vertex vertex)
 		{
-			switch (SpecialActionIndex) {
-				default: {
+			switch (SpecialActionIndex)
+			{
+				default:
+				{
 					break;
 				}
 
 				// Добавить медиану.
-				case 0: {
-					if (Selected.FirstOrDefault() is Cut cut) {
+				case 0:
+				{
+					if (Selected.FirstOrDefault() is Cut cut)
+					{
 						Shapes.Add(new Cut(vertex, cut.GetGravityCenter()));
 					}
 					break;
 				}
 
 				// Добавить высоту.
-				case 1: {
-					if (Selected.FirstOrDefault() is Cut cut) {
+				case 1:
+				{
+					if (Selected.FirstOrDefault() is Cut cut)
+					{
 						var a = cut.A.Vertex.Y - cut.B.Vertex.Y;
 						var b = cut.B.Vertex.X - cut.A.Vertex.X;
 						var c = cut.A.Vertex.X * cut.B.Vertex.Y - cut.B.Vertex.X * cut.A.Vertex.Y;
@@ -686,9 +743,12 @@ namespace CG
 						var y = (Pow(a, 2) * vertex.Y - a * b * vertex.X - c * b) / (Pow(b, 2) + Pow(a, 2));
 						var z = 0d;
 
-						if (Abs(b) > 0.00001) {
+						if (Abs(b) > 0.00001)
+						{
 							z = cut.A.Vertex.Z + (cut.B.Vertex.Z - cut.A.Vertex.Z) * ((x - cut.A.Vertex.X) / a);
-						} else {
+						}
+						else
+						{
 							z = cut.A.Vertex.Z + (cut.B.Vertex.Z - cut.A.Vertex.Z) * ((y - cut.A.Vertex.Y) / b);
 						}
 
@@ -698,10 +758,12 @@ namespace CG
 				}
 
 				// Добавить биссектрису.
-				case 2: {
+				case 2:
+				{
 					if (Selected.Count == 2 &&
 						Selected.First() is Cut cut1 &&
-						Selected.Skip(1).First() is Cut cut2) {
+						Selected.Skip(1).First() is Cut cut2)
+					{
 						var A1 = cut1.A.Vertex;
 						var B1 = cut1.B.Vertex;
 						var A2 = cut2.A.Vertex;
@@ -713,7 +775,8 @@ namespace CG
 						var b2 = B2.X - A2.X;
 						var c2 = A2.X * B2.Y - B2.X * A2.Y;
 
-						if (a1 * b2 - a2 * b1 == 0) {
+						if (a1 * b2 - a2 * b1 == 0)
+						{
 							return;
 						}
 
@@ -721,9 +784,12 @@ namespace CG
 						var y1 = (c1 * a2 - c2 * a1) / (a1 * b2 - a2 * b1);
 						double z1;
 
-						if (Abs(b1) > 0.00001) {
+						if (Abs(b1) > 0.00001)
+						{
 							z1 = (A1.Z + (B1.Z - A1.Z) * (x1 - A1.X) / b1);
-						} else {
+						}
+						else
+						{
 							z1 = (A1.Z + (B1.Z - A1.Z) * (y1 - A1.Y) / a1);
 						}
 
@@ -749,9 +815,11 @@ namespace CG
 				}
 
 				// Отрисовать тени.
-				case 3: {
+				case 3:
+				{
 					if (Selected.Count == 1 &&
-						Selected.FirstOrDefault() is Group group) {
+						Selected.FirstOrDefault() is Group group)
+					{
 						var shadow = new Group();
 						var anchorPoint = new Vertex(
 							x: ScreenVertex.X != 0 ? Random.NextDouble() : 0,
@@ -759,7 +827,8 @@ namespace CG
 							z: ScreenVertex.Z != 0 ? Random.NextDouble() : 0,
 							uniformCoordinate: 1);
 
-						foreach (Cut i in group.Shapes) {
+						foreach (Cut i in group.Shapes)
+						{
 							shadow.Shapes.Add(new Cut(
 								a: OldVertex + (i.A.Vertex - OldVertex) * (ScreenVertex * (anchorPoint - OldVertex) / (ScreenVertex * (i.A.Vertex - OldVertex))),
 								b: OldVertex + (i.B.Vertex - OldVertex) * (ScreenVertex * (anchorPoint - OldVertex) / (ScreenVertex * (i.B.Vertex - OldVertex)))));

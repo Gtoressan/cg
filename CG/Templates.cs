@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static System.Math;
 
 namespace CG
@@ -25,7 +23,8 @@ namespace CG
 
 		public static void Transform(Vertex[] vertices, double[] matrix)
 		{
-			for (int i = 0; i < vertices.Length; ++i) {
+			for (int i = 0; i < vertices.Length; ++i)
+			{
 				vertices[i].X =
 					vertices[i].X * matrix[0] +
 					vertices[i].Y * matrix[4] +
@@ -95,7 +94,8 @@ namespace CG
 				X == vertex.X &&
 				Y == vertex.Y &&
 				Z == vertex.Z &&
-				UC == vertex.UC) {
+				UC == vertex.UC)
+			{
 				return true;
 			}
 
@@ -114,7 +114,8 @@ namespace CG
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
-			if (GetDistance(vertex) <= epsilon) {
+			if (GetDistance(vertex) <= epsilon)
+			{
 				return this;
 			}
 
@@ -188,7 +189,8 @@ namespace CG
 		{
 			if (obj is SubVertex subvertex &&
 				Origin == subvertex.Origin &&
-				Vertex == subvertex.Vertex) {
+				Vertex == subvertex.Vertex)
+			{
 				return true;
 			}
 
@@ -247,7 +249,8 @@ namespace CG
 		{
 			if (obj is Cut cut &&
 				A == cut.A &&
-				B == cut.B) {
+				B == cut.B)
+			{
 				return true;
 			}
 
@@ -270,15 +273,22 @@ namespace CG
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
-			if (A.GetIntersection(vertex, epsilon) is Vertex) {
+			if (A.GetIntersection(vertex, epsilon) is Vertex)
+			{
 				return A;
-			} else if (B.GetIntersection(vertex, epsilon) is Vertex) {
+			}
+			else if (B.GetIntersection(vertex, epsilon) is Vertex)
+			{
 				return B;
-			} else if (
-				GetDistance(vertex) <= epsilon &&
-				A.GetDistance(vertex) + B.GetDistance(vertex) <= A.GetDistance(B.Vertex) + epsilon) {
+			}
+			else if (
+			  GetDistance(vertex) <= epsilon &&
+			  A.GetDistance(vertex) + B.GetDistance(vertex) <= A.GetDistance(B.Vertex) + epsilon)
+			{
 				return this;
-			} else {
+			}
+			else
+			{
 				return null;
 			}
 		}
@@ -316,7 +326,8 @@ namespace CG
 
 		public override object Clone()
 		{
-			return new Plane(0, 0, 0) {
+			return new Plane(0, 0, 0)
+			{
 				OX = (Cut)OX.Clone(),
 				OY = (Cut)OY.Clone(),
 				OZ = (Cut)OZ.Clone()
@@ -350,13 +361,20 @@ namespace CG
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
-			if (OX.GetIntersection(vertex, epsilon) is Shape ox) {
+			if (OX.GetIntersection(vertex, epsilon) is Shape ox)
+			{
 				return ox;
-			} else if (OY.GetIntersection(vertex, epsilon) is Shape oy) {
+			}
+			else if (OY.GetIntersection(vertex, epsilon) is Shape oy)
+			{
 				return oy;
-			} else if (OZ.GetIntersection(vertex, epsilon) is Shape oz) {
+			}
+			else if (OZ.GetIntersection(vertex, epsilon) is Shape oz)
+			{
 				return oz;
-			} else {
+			}
+			else
+			{
 				return null;
 			}
 		}
@@ -379,7 +397,8 @@ namespace CG
 		{
 			var group = new Group();
 
-			foreach (var i in Shapes) {
+			foreach (var i in Shapes)
+			{
 				group.Shapes.Add((Shape)i.Clone());
 			}
 
@@ -388,7 +407,8 @@ namespace CG
 
 		public override void Draw(Graphics graphics, Pen pen)
 		{
-			foreach (var i in Shapes) {
+			foreach (var i in Shapes)
+			{
 				i.Draw(graphics, pen);
 			}
 		}
@@ -397,10 +417,12 @@ namespace CG
 		{
 			var minDistance = Shapes.FirstOrDefault()?.GetDistance(vertex);
 
-			foreach (var i in Shapes.Skip(1)) {
+			foreach (var i in Shapes.Skip(1))
+			{
 				var distance = i.GetDistance(vertex);
 
-				if (distance < minDistance) {
+				if (distance < minDistance)
+				{
 					minDistance = distance;
 				}
 			}
@@ -414,7 +436,8 @@ namespace CG
 			var currentY = 0d;
 			var currentZ = 0d;
 
-			foreach (var i in Shapes) {
+			foreach (var i in Shapes)
+			{
 				var gravityCenter = i.GetGravityCenter();
 				currentX += gravityCenter.X;
 				currentY += gravityCenter.Y;
@@ -430,9 +453,12 @@ namespace CG
 
 		public override Shape GetIntersection(Vertex vertex, double epsilon)
 		{
-			foreach (var i in Shapes) {
-				if (i.GetIntersection(vertex, epsilon) is Shape shape) {
-					if (shape is SubVertex subVertex) {
+			foreach (var i in Shapes)
+			{
+				if (i.GetIntersection(vertex, epsilon) is Shape shape)
+				{
+					if (shape is SubVertex subVertex)
+					{
 						return subVertex;
 					}
 					return this;
@@ -444,7 +470,8 @@ namespace CG
 
 		public override void Transform(double[] matrix)
 		{
-			foreach (var i in Shapes) {
+			foreach (var i in Shapes)
+			{
 				i.Transform(matrix);
 			}
 		}
